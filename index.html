@@ -1,0 +1,1642 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ممنون | أكاديمية تحفيظ القرآن الكريم</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+  body { margin: 0; font-family: 'Tajawal', sans-serif; }
+  #root { min-height: 100vh; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" data-presets="react">
+const { useState, useEffect, useCallback, useMemo } = React;
+
+// ---- lucide-react substitute: minimal inline icon set (CDN-free, no build step) ----
+// ---- Minimal inline icon set (replaces lucide-react for CDN-only build) ----
+function makeIcon(paths) {
+  return function Icon({ size = 18, color = 'currentColor', style }) {
+    return React.createElement('svg', {
+      width: size, height: size, viewBox: '0 0 24 24', fill: 'none',
+      stroke: color, strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round', style,
+    }, paths.map((d, i) => React.createElement('path', { key: i, d })));
+  };
+}
+
+const BookOpen = makeIcon(['M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z', 'M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z']);
+const Users = makeIcon(['M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2', 'M22 21v-2a4 4 0 0 0-3-3.87', 'M16 3.13a4 4 0 0 1 0 7.75', 'M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z']);
+const GraduationCap = makeIcon(['M22 10 12 5 2 10l10 5 10-5Z', 'M6 12v5c0 1 3 3 6 3s6-2 6-3v-5']);
+const UserCircle = makeIcon(['M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8z', 'M5 20a7 7 0 0 1 14 0', 'M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z']);
+const LogOut = makeIcon(['M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4', 'M16 17l5-5-5-5', 'M21 12H9']);
+const Plus = makeIcon(['M12 5v14', 'M5 12h14']);
+const X = makeIcon(['M18 6 6 18', 'M6 6l12 12']);
+const Clock = makeIcon(['M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z', 'M12 6v6l4 2']);
+const Phone = makeIcon(['M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.11 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.91.68 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.32 1.85.55 2.81.68A2 2 0 0 1 22 16.92z']);
+const TrendingUp = makeIcon(['M23 6l-9.5 9.5-5-5L1 18', 'M17 6h6v6']);
+const AlertCircle = makeIcon(['M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z', 'M12 8v4', 'M12 16h.01']);
+const Edit3 = makeIcon(['M12 20h9', 'M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z']);
+const Trash2 = makeIcon(['M3 6h18', 'M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6', 'M10 11v6', 'M14 11v6', 'M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2']);
+const ChevronRight = makeIcon(['M9 18l6-6-6-6']);
+const BookMarked = makeIcon(['M4 19.5A2.5 2.5 0 0 1 6.5 17H20', 'M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z', 'M12 7v6l-2-1.5L8 13V7']);
+const Wallet = makeIcon(['M21 12V7H5a2 2 0 0 1 0-4h14v4', 'M3 5v14a2 2 0 0 0 2 2h16v-5', 'M18 12a2 2 0 0 0 0 4h4v-4Z']);
+const LinkIcon = makeIcon(['M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71', 'M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71']);
+const Eye = makeIcon(['M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z', 'M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z']);
+const EyeOff = makeIcon(['M9.88 9.88a3 3 0 1 0 4.24 4.24', 'M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 11 8 11 8a13.16 13.16 0 0 1-1.67 2.68', 'M6.61 6.61A13.526 13.526 0 0 0 1 12s4 8 11 8a9.74 9.74 0 0 0 5.39-1.61', 'M2 2l20 20']);
+const ArrowLeft = makeIcon(['M19 12H5', 'M12 19l-7-7 7-7']);
+const Sparkles = makeIcon(['M12 3v4', 'M12 17v4', 'M3 12h4', 'M17 12h4', 'M5.6 5.6l2.8 2.8', 'M15.6 15.6l2.8 2.8', 'M18.4 5.6l-2.8 2.8', 'M8.4 15.6l-2.8 2.8']);
+const Search = makeIcon(['M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z', 'M21 21l-4.35-4.35']);
+const CheckCircle2 = makeIcon(['M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z', 'M9 12l2 2 4-4']);
+const XCircle = makeIcon(['M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z', 'M15 9l-6 6', 'M9 9l6 6']);
+const Copy = makeIcon(['M9 9h10v10H9z', 'M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1']);
+const CalendarDays = makeIcon(['M8 2v4', 'M16 2v4', 'M3 10h18', 'M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z', 'M8 14h.01', 'M12 14h.01', 'M16 14h.01']);
+const BarChart3 = makeIcon(['M3 3v18h18', 'M18 17V9', 'M13 17V5', 'M8 17v-3']);
+const ShieldCheck = makeIcon(['M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z', 'M9 12l2 2 4-4']);
+const KeyRound = makeIcon(['M15.5 7.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5Z', 'M2 22l5.5-5.5', 'M9.5 14.5 13 11l3 3-3.5 3.5z']);
+
+
+/* ============================================================
+   BRAND IDENTITY — مَمنون / Mamnoon
+   من قوله تعالى: "إِنَّهُ لَقُرْآنٌ كَرِيمٌ، فِي كِتَابٍ مَكْنُونٍ" (الواقعة: 77-78)
+   ============================================================ */
+const BRAND = {
+  nameAr: 'ممنون',
+  nameEn: 'Mamnoon',
+  tagline: 'إِنَّهُ لَقُرْآنٌ كَرِيمٌ ۝ فِي كِتَابٍ مَكْنُونٍ',
+  taglineRef: 'سورة الواقعة',
+};
+
+const COLORS = {
+  bg: '#10261F',        // deep masjid-shadow green-black
+  bgAlt: '#0B1D17',
+  surface: 'rgba(255,255,255,0.035)',
+  border: '#22392F',
+  borderLight: '#e6dcc3',
+  cream: '#FAF6EC',
+  creamDim: '#cfc6ad',
+  gold: '#D4AF6A',
+  goldDim: 'rgba(212,175,106,0.14)',
+  green: '#3D5347',
+  red: '#9C3B3B',
+  redBg: '#f5dede',
+  ink: '#1A130B',
+  inkDim: '#6b6450',
+};
+
+/* ============================================================
+   STORAGE LAYER
+   ============================================================ */
+const SK = {
+  STUDENTS: 'mamnoon:students',
+  TEACHERS: 'mamnoon:teachers',
+  PARENTS: 'mamnoon:parents',
+  SESSIONS: 'mamnoon:sessions',
+  PAYMENTS: 'mamnoon:payments',
+  META: 'mamnoon:meta',
+};
+
+async function loadKey(key, fallback) {
+  try {
+    const r = await window.storage.get(key, true);
+    if (r && r.value) return JSON.parse(r.value);
+    return fallback;
+  } catch (e) { return fallback; }
+}
+async function saveKey(key, value) {
+  try { await window.storage.set(key, JSON.stringify(value), true); return true; }
+  catch (e) { console.error('save failed', key, e); return false; }
+}
+
+/* ============================================================
+   DOMAIN CONSTANTS
+   ============================================================ */
+const PACKAGES = {
+  basic: { id: 'basic', label: 'الباقة الأساسية', sessions: 4, price: 250 },
+  intensive: { id: 'intensive', label: 'الباقة المكثفة', sessions: 8, price: 350 },
+};
+
+function pkgOf(key) { return PACKAGES[key] || PACKAGES.basic; }
+
+function teacherSplit(teacher, pkgKey) {
+  const pkg = pkgOf(pkgKey);
+  const pct = teacher ? teacher.sharePercent : 60;
+  const teacherShare = Math.round((pkg.price * pct) / 100);
+  return { total: pkg.price, teacherShare, academyShare: pkg.price - teacherShare, sessions: pkg.sessions };
+}
+
+/* ============================================================
+   ID / CREDENTIAL / DATE HELPERS
+   ============================================================ */
+function uid(prefix) { return `${prefix}_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 7)}`; }
+
+function genPassword() {
+  const chars = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+  let out = '';
+  for (let i = 0; i < 6; i++) out += chars[Math.floor(Math.random() * chars.length)];
+  return out;
+}
+
+function slugFromName(name) {
+  return name.trim().split(/\s+/)[0]
+    .replace(/[إأآا]/g, 'a').replace(/[ىي]/g, 'y').replace(/ة/g, 'a')
+    .replace(/[^a-zA-Z0-9\u0600-\u06FF]/g, '').toLowerCase() || 'user';
+}
+
+function genEmail(name, domain, existingEmails) {
+  const base = slugFromName(name);
+  let email = `${base}@${domain}`;
+  let n = 1;
+  while (existingEmails.includes(email)) { email = `${base}${n}@${domain}`; n++; }
+  return email;
+}
+
+function formatDate(iso) {
+  if (!iso) return '—';
+  return new Date(iso).toLocaleDateString('ar-EG', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+function formatDateTime(iso) {
+  if (!iso) return '—';
+  return new Date(iso).toLocaleDateString('ar-EG', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+}
+function daysSince(iso) {
+  if (!iso) return Infinity;
+  return Math.floor((Date.now() - new Date(iso).getTime()) / 86400000);
+}
+function addDays(iso, days) {
+  const d = new Date(iso);
+  d.setDate(d.getDate() + days);
+  return d.toISOString();
+}
+function paymentStatus(student) {
+  if (!student.lastPaymentDate) return 'due';
+  const elapsed = daysSince(student.lastPaymentDate);
+  if (elapsed <= 30) return 'paid';
+  if (elapsed <= 35) return 'grace';
+  return 'overdue';
+}
+
+/* ============================================================
+   SEED DATA (first run only — demonstrates the system populated)
+   ============================================================ */
+function seedAll() {
+  const teacherId = uid('t');
+  const parentId = uid('p');
+  const studentId = uid('s');
+  const now = new Date().toISOString();
+
+  const teachers = [{
+    id: teacherId, name: 'الشيخ أحمد المرسي',
+    email: 'ahmed@mamnoon-teachers.com', password: genPassword(),
+    phone: '01012345678', bio: 'إجازة في القراءات العشر من الأزهر، 6 سنوات خبرة في تحفيظ الأطفال عن بُعد',
+    sharePercent: 60, active: true, createdAt: now,
+  }];
+
+  const parents = [{
+    id: parentId, name: 'خالد إبراهيم',
+    email: 'khaled@mamnoon-family.com', password: genPassword(),
+    phone: '01098765432', studentIds: [studentId], createdAt: now,
+  }];
+
+  const students = [{
+    id: studentId, name: 'يوسف خالد', age: 9,
+    email: 'youssef@mamnoon-students.com', password: genPassword(),
+    parentId, teacherId, package: 'basic', zoomLink: '',
+    currentSurah: 'سورة النبأ', memorizedPages: 3, totalPagesTarget: 20,
+    lastPaymentDate: addDays(now, -10), joinedAt: addDays(now, -40), active: true,
+  }];
+
+  return { teachers, parents, students, sessions: [], payments: [] };
+}
+
+/* ============================================================
+   ROOT APP
+   ============================================================ */
+function App() {
+  const [students, setStudents] = useState([]);
+  const [teachers, setTeachers] = useState([]);
+  const [parents, setParents] = useState([]);
+  const [sessions, setSessions] = useState([]);
+  const [payments, setPayments] = useState([]);
+  const [loaded, setLoaded] = useState(false);
+
+  const [view, setView] = useState('landing');
+  const [currentUser, setCurrentUser] = useState(null);
+  const [loginRole, setLoginRole] = useState('admin');
+
+  useEffect(() => {
+    (async () => {
+      const meta = await loadKey(SK.META, null);
+      if (!meta) {
+        const seed = seedAll();
+        setTeachers(seed.teachers); setParents(seed.parents); setStudents(seed.students);
+        setSessions(seed.sessions); setPayments(seed.payments);
+        await Promise.all([
+          saveKey(SK.TEACHERS, seed.teachers), saveKey(SK.PARENTS, seed.parents),
+          saveKey(SK.STUDENTS, seed.students), saveKey(SK.SESSIONS, seed.sessions),
+          saveKey(SK.PAYMENTS, seed.payments), saveKey(SK.META, { seeded: true, at: new Date().toISOString() }),
+        ]);
+      } else {
+        const [st, te, pa, se, pay] = await Promise.all([
+          loadKey(SK.STUDENTS, []), loadKey(SK.TEACHERS, []), loadKey(SK.PARENTS, []),
+          loadKey(SK.SESSIONS, []), loadKey(SK.PAYMENTS, []),
+        ]);
+        setStudents(st); setTeachers(te); setParents(pa); setSessions(se); setPayments(pay);
+      }
+      setLoaded(true);
+    })();
+  }, []);
+
+  useEffect(() => { if (loaded) saveKey(SK.STUDENTS, students); }, [students, loaded]);
+  useEffect(() => { if (loaded) saveKey(SK.TEACHERS, teachers); }, [teachers, loaded]);
+  useEffect(() => { if (loaded) saveKey(SK.PARENTS, parents); }, [parents, loaded]);
+  useEffect(() => { if (loaded) saveKey(SK.SESSIONS, sessions); }, [sessions, loaded]);
+  useEffect(() => { if (loaded) saveKey(SK.PAYMENTS, payments); }, [payments, loaded]);
+
+  const handleLogout = useCallback(() => { setCurrentUser(null); setView('landing'); }, []);
+
+  if (!loaded) {
+    return (
+      <div style={{ minHeight: '100vh', background: COLORS.bg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <SealMark size={40} pct={60} animate />
+      </div>
+    );
+  }
+
+  return (
+    <div dir="rtl" style={{ fontFamily: "'Tajawal','IBM Plex Sans Arabic',sans-serif", minHeight: '100vh' }}>
+      <style>{GLOBAL_CSS}</style>
+      {view === 'landing' && <Landing onEnter={() => setView('login')} />}
+      {view === 'login' && (
+        <LoginScreen
+          role={loginRole} setRole={setLoginRole}
+          teachers={teachers} parents={parents}
+          onBack={() => setView('landing')}
+          onLogin={(role, user) => { setCurrentUser(user); setView(role); }}
+        />
+      )}
+      {view === 'admin' && currentUser && (
+        <AdminDashboard
+          students={students} setStudents={setStudents}
+          teachers={teachers} setTeachers={setTeachers}
+          parents={parents} setParents={setParents}
+          sessions={sessions} setSessions={setSessions}
+          payments={payments} setPayments={setPayments}
+          onLogout={handleLogout}
+        />
+      )}
+      {view === 'teacher' && currentUser && (
+        <TeacherDashboard
+          teacher={currentUser} students={students} setStudents={setStudents}
+          sessions={sessions} setSessions={setSessions} onLogout={handleLogout}
+        />
+      )}
+      {view === 'parent' && currentUser && (
+        <ParentDashboard
+          parent={currentUser} students={students} teachers={teachers}
+          payments={payments} sessions={sessions} onLogout={handleLogout}
+        />
+      )}
+    </div>
+  );
+}
+
+const GLOBAL_CSS = `
+  * { box-sizing: border-box; }
+  body { margin: 0; }
+  ::selection { background: ${COLORS.gold}; color: ${COLORS.bg}; }
+  .focus-ring:focus-visible { outline: 2px solid ${COLORS.gold}; outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) { *{ animation-duration:.01ms !important; transition-duration:.01ms !important; } }
+  input, button, select, textarea { font-family: inherit; }
+  input::placeholder { color: #a39a82; }
+  @keyframes sealPulse { 0%,100% { opacity: 1; } 50% { opacity: .55; } }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  table { border-collapse: collapse; width: 100%; }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-thumb { background: #d8cfb6; border-radius: 8px; }
+`;
+
+/* ============================================================
+   SIGNATURE ELEMENT — the Seal (الختم)
+   "مكنون" = sealed/preserved with care. Progress is shown as a
+   wax-seal medallion that fills in concentric rings as pages
+   are memorized, with the academy mark at its center once complete.
+   ============================================================ */
+function SealMark({ size = 64, pct = 0, animate = false, label }) {
+  const r1 = size * 0.46;
+  const r2 = size * 0.36;
+  const c1 = 2 * Math.PI * r1;
+  const c2 = 2 * Math.PI * r2;
+  const cx = size / 2, cy = size / 2;
+  return (
+    <div style={{ textAlign: 'center' }}>
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={animate ? { animation: 'sealPulse 1.8s ease-in-out infinite' } : undefined}>
+        <circle cx={cx} cy={cy} r={r1} fill="none" stroke={COLORS.border} strokeWidth={size * 0.045} opacity={0.5} />
+        <circle
+          cx={cx} cy={cy} r={r1} fill="none" stroke={COLORS.gold} strokeWidth={size * 0.045}
+          strokeDasharray={c1} strokeDashoffset={c1 - (Math.min(pct, 100) / 100) * c1}
+          strokeLinecap="round" transform={`rotate(-90 ${cx} ${cy})`}
+          style={{ transition: 'stroke-dashoffset 1.1s cubic-bezier(.4,0,.2,1)' }}
+        />
+        <circle cx={cx} cy={cy} r={r2} fill="none" stroke={COLORS.border} strokeWidth={1} strokeDasharray="2,3" opacity={0.6} />
+        <text x={cx} y={cy + size * 0.06} textAnchor="middle" fill={COLORS.cream} fontSize={size * 0.22} fontWeight="800">
+          {Math.round(pct)}%
+        </text>
+      </svg>
+      {label && <div style={{ fontSize: size * 0.16, color: COLORS.creamDim, marginTop: 4 }}>{label}</div>}
+    </div>
+  );
+}
+
+function MamnoonMark({ size = 28, color = COLORS.gold }) {
+  // An open-book / seal hybrid glyph — references both the Quran and the wax-seal motif
+  return (
+    <svg width={size} height={size} viewBox="0 0 32 32" fill="none">
+      <circle cx="16" cy="16" r="14.5" stroke={color} strokeWidth="1.4" opacity="0.55" />
+      <path d="M16 9C13.5 7.3 10.5 7 8 7.6V21.6C10.5 21 13.5 21.3 16 23" stroke={color} strokeWidth="1.6" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M16 9C18.5 7.3 21.5 7 24 7.6V21.6C21.5 21 18.5 21.3 16 23" stroke={color} strokeWidth="1.6" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+      <line x1="16" y1="9" x2="16" y2="23" stroke={color} strokeWidth="1.2" opacity="0.6" />
+    </svg>
+  );
+}
+
+function BrandLockup({ size = 26, color = COLORS.cream, accent = COLORS.gold, withTagline = false }) {
+  return (
+    <div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        <MamnoonMark size={size} color={accent} />
+        <div>
+          <div style={{ fontWeight: 800, fontSize: size * 0.7, color, lineHeight: 1.1, letterSpacing: 0.3 }}>{BRAND.nameAr}</div>
+          <div style={{ fontWeight: 600, fontSize: size * 0.32, color: accent, letterSpacing: 1.5, textTransform: 'uppercase' }}>{BRAND.nameEn}</div>
+        </div>
+      </div>
+      {withTagline && (
+        <div style={{ marginTop: 14, fontSize: 14, color: COLORS.creamDim, lineHeight: 1.9, fontWeight: 500 }}>
+          «{BRAND.tagline}»
+          <span style={{ display: 'block', fontSize: 11.5, color: '#7a7260', marginTop: 4 }}>{BRAND.taglineRef}</span>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ============================================================
+   LANDING PAGE
+   ============================================================ */
+function Landing({ onEnter }) {
+  return (
+    <div style={{ background: COLORS.bg, color: COLORS.cream, minHeight: '100vh', position: 'relative', overflow: 'hidden' }}>
+      <div style={{
+        position: 'absolute', inset: 0, opacity: 0.06, pointerEvents: 'none',
+        backgroundImage: `radial-gradient(circle at 18% 15%, ${COLORS.gold} 0%, transparent 32%), radial-gradient(circle at 82% 75%, ${COLORS.green} 0%, transparent 42%)`,
+      }} />
+
+      <nav style={{ position: 'relative', zIndex: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '22px 32px', maxWidth: 1120, margin: '0 auto' }}>
+        <BrandLockup size={24} />
+        <button onClick={onEnter} className="focus-ring" style={{
+          background: 'transparent', border: `1px solid ${COLORS.gold}`, color: COLORS.gold,
+          padding: '9px 22px', borderRadius: 8, fontSize: 14, fontWeight: 700, cursor: 'pointer',
+        }}>تسجيل الدخول</button>
+      </nav>
+
+      <header style={{ position: 'relative', zIndex: 2, maxWidth: 860, margin: '0 auto', padding: '60px 32px 16px', textAlign: 'center' }}>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: COLORS.goldDim, border: `1px solid rgba(212,175,106,0.3)`, borderRadius: 999, padding: '6px 16px', fontSize: 13, color: COLORS.gold, marginBottom: 26 }}>
+          <Sparkles size={14} /> أكاديمية تحفيظ القرآن الكريم عن بُعد
+        </div>
+        <h1 style={{ fontSize: 'clamp(32px,5.5vw,52px)', fontWeight: 800, lineHeight: 1.3, margin: '0 0 22px' }}>
+          كتابٌ مكنون، وحفظٌ يُورَث،<br />من بيتكم إلى قلب ابنكم
+        </h1>
+        <div style={{
+          maxWidth: 560, margin: '0 auto 16px', padding: '18px 24px', background: 'rgba(0,0,0,0.18)',
+          border: `1px solid ${COLORS.border}`, borderRadius: 14,
+        }}>
+          <p style={{ fontSize: 17, color: COLORS.gold, lineHeight: 1.9, margin: 0, fontWeight: 600 }}>
+            «{BRAND.tagline}»
+          </p>
+          <span style={{ fontSize: 11.5, color: '#7a7260' }}>{BRAND.taglineRef}</span>
+        </div>
+        <p style={{ fontSize: 16.5, color: COLORS.creamDim, lineHeight: 1.85, maxWidth: 560, margin: '20px auto 36px' }}>
+          معلمون موثوقون بإجازات معتمدة، حصص أونلاين مباشرة، ومتابعة يومية لحفظ ابنكم وتلاوته — كل ذلك دون أن تتحرك من مكانك.
+        </p>
+        <div style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
+          <a href="#packages" className="focus-ring" style={{ background: COLORS.gold, color: COLORS.bg, padding: '14px 32px', borderRadius: 10, fontWeight: 800, fontSize: 16, textDecoration: 'none' }}>شاهد الباقات</a>
+          <a href="#register" className="focus-ring" style={{ background: 'transparent', color: COLORS.cream, border: `1px solid ${COLORS.border}`, padding: '14px 32px', borderRadius: 10, fontWeight: 700, fontSize: 16, textDecoration: 'none' }}>سجّل ابنك الآن</a>
+        </div>
+      </header>
+
+      <div style={{ position: 'relative', zIndex: 2, display: 'flex', justifyContent: 'center', gap: 30, padding: '36px 32px 70px', flexWrap: 'wrap' }}>
+        {[{ l: 'جزء عمّ', p: 100 }, { l: 'سورة الكهف', p: 65 }, { l: 'سورة البقرة', p: 30 }].map((s, i) => (
+          <SealMark key={i} size={78} pct={s.p} label={s.l} />
+        ))}
+      </div>
+
+      <section style={{ position: 'relative', zIndex: 2, borderTop: `1px solid ${COLORS.border}`, borderBottom: `1px solid ${COLORS.border}`, background: 'rgba(0,0,0,0.12)' }}>
+        <div style={{ maxWidth: 1020, margin: '0 auto', padding: '36px 32px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))', gap: 28 }}>
+          {[
+            { icon: GraduationCap, t: 'إجازة معتمدة', d: 'كل معلم لديه سند قراءة موثّق، فلا حفظ بلا إسناد' },
+            { icon: Clock, t: 'مواعيد ثابتة', d: 'حصة نصف ساعة، في معاد محدد كل أسبوع' },
+            { icon: UserCircle, t: 'متابعة ولي الأمر', d: 'تقرير حضور وحفظ بعد كل حصة، دون أن تسأل' },
+          ].map((f, i) => (
+            <div key={i} style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
+              <f.icon size={22} color={COLORS.gold} style={{ flexShrink: 0, marginTop: 2 }} />
+              <div>
+                <div style={{ fontWeight: 700, fontSize: 15, marginBottom: 4 }}>{f.t}</div>
+                <div style={{ fontSize: 13.5, color: '#a8a092', lineHeight: 1.6 }}>{f.d}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section id="packages" style={{ position: 'relative', zIndex: 2, maxWidth: 900, margin: '0 auto', padding: '72px 32px' }}>
+        <div style={{ textAlign: 'center', marginBottom: 44 }}>
+          <div style={{ fontSize: 13, color: COLORS.gold, fontWeight: 700, letterSpacing: 1, marginBottom: 10 }}>الباقات والأسعار</div>
+          <h2 style={{ fontSize: 29, fontWeight: 800, margin: 0 }}>اختر الباقة المناسبة لابنك</h2>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(280px,1fr))', gap: 24 }}>
+          <PackageCard name={PACKAGES.basic.label} sessions={4} price={250} desc="مناسبة لمن يريد بداية هادئة ومنتظمة" />
+          <PackageCard name={PACKAGES.intensive.label} sessions={8} price={350} desc="لتثبيت الحفظ بشكل أسرع ومتابعة أقرب" featured />
+        </div>
+        <p style={{ textAlign: 'center', color: '#8a8275', fontSize: 13, marginTop: 24 }}>كل حصة نصف ساعة · الدفع شهرياً عبر فودافون كاش</p>
+      </section>
+
+      <section id="register" style={{ position: 'relative', zIndex: 2, maxWidth: 640, margin: '0 auto', padding: '20px 32px 96px', textAlign: 'center' }}>
+        <div style={{ background: `linear-gradient(135deg, ${COLORS.goldDim}, rgba(61,83,71,0.25))`, border: `1px solid ${COLORS.border}`, borderRadius: 18, padding: '44px 32px' }}>
+          <BookMarked size={30} color={COLORS.gold} style={{ marginBottom: 16 }} />
+          <h3 style={{ fontSize: 22, fontWeight: 800, margin: '0 0 12px' }}>عايز تسجّل ابنك معانا؟</h3>
+          <p style={{ color: '#bdb4a1', fontSize: 14.5, lineHeight: 1.7, margin: '0 0 24px' }}>تواصل معنا على واتساب، وسنرتب حصة تجربة أولى مع المعلم المناسب قبل الاشتراك.</p>
+          <a href="https://wa.me/201012345678" target="_blank" rel="noopener noreferrer" className="focus-ring" style={{ background: COLORS.gold, color: COLORS.bg, padding: '13px 30px', borderRadius: 10, fontWeight: 800, fontSize: 15, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+            <Phone size={16} /> تواصل على واتساب
+          </a>
+        </div>
+      </section>
+
+      <footer style={{ position: 'relative', zIndex: 2, borderTop: `1px solid ${COLORS.border}`, padding: '28px 32px', textAlign: 'center', color: '#6e675c', fontSize: 13 }}>
+        {BRAND.nameAr} — أكاديمية تحفيظ القرآن الكريم عن بُعد · {new Date().getFullYear()}
+      </footer>
+    </div>
+  );
+}
+
+function PackageCard({ name, sessions, price, desc, featured }) {
+  return (
+    <div style={{
+      background: featured ? `linear-gradient(160deg, ${COLORS.goldDim}, rgba(16,38,31,0.4))` : 'rgba(255,255,255,0.02)',
+      border: featured ? `1px solid ${COLORS.gold}` : `1px solid ${COLORS.border}`, borderRadius: 16, padding: 28, position: 'relative',
+    }}>
+      {featured && <div style={{ position: 'absolute', top: -11, insetInlineStart: 24, background: COLORS.gold, color: COLORS.bg, fontSize: 11.5, fontWeight: 800, padding: '3px 12px', borderRadius: 999 }}>الأكثر طلباً</div>}
+      <div style={{ fontSize: 13, color: COLORS.gold, fontWeight: 700, marginBottom: 8 }}>{sessions} حصص شهرياً</div>
+      <div style={{ fontSize: 22, fontWeight: 800, marginBottom: 6 }}>{name}</div>
+      <div style={{ display: 'flex', alignItems: 'baseline', gap: 6, margin: '16px 0' }}>
+        <span style={{ fontSize: 34, fontWeight: 800 }}>{price}</span>
+        <span style={{ fontSize: 14, color: '#a8a092' }}>جنيه / شهر</span>
+      </div>
+      <p style={{ fontSize: 13.5, color: '#a8a092', lineHeight: 1.7, margin: 0 }}>{desc}</p>
+    </div>
+  );
+}
+
+/* ============================================================
+   LOGIN SCREEN
+   ============================================================ */
+function LoginScreen({ role, setRole, teachers, parents, onBack, onLogin }) {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPw, setShowPw] = useState(false);
+  const [error, setError] = useState('');
+
+  const roleConfig = {
+    admin: { label: 'الأدمن', icon: ShieldCheck, hint: 'بيانات حساب مالك الأكاديمية' },
+    teacher: { label: 'المعلم', icon: GraduationCap, hint: 'البريد وكلمة السر اللي أرسلهم الأدمن لك' },
+    parent: { label: 'ولي الأمر', icon: UserCircle, hint: 'البريد وكلمة السر اللي أرسلهم الأدمن لك' },
+  };
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    setError('');
+    const em = email.trim().toLowerCase();
+
+    if (role === 'admin') {
+      if (em === 'admin@mamnoon.com' && password === 'Mamnoon@2026') {
+        onLogin('admin', { id: 'admin', name: 'الأدمن' });
+      } else setError('بيانات الدخول غير صحيحة');
+      return;
+    }
+    if (role === 'teacher') {
+      const t = teachers.find(t => t.email.toLowerCase() === em && t.password === password);
+      if (t) onLogin('teacher', t); else setError('البريد أو كلمة السر غير صحيحة');
+      return;
+    }
+    if (role === 'parent') {
+      const p = parents.find(p => p.email.toLowerCase() === em && p.password === password);
+      if (p) onLogin('parent', p); else setError('البريد أو كلمة السر غير صحيحة');
+      return;
+    }
+  }
+
+  return (
+    <div style={{ background: COLORS.bg, minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
+      <div style={{ width: '100%', maxWidth: 420 }}>
+        <button onClick={onBack} className="focus-ring" style={{ background: 'none', border: 'none', color: '#a8a092', display: 'flex', alignItems: 'center', gap: 6, marginBottom: 26, cursor: 'pointer', fontSize: 14, padding: 4 }}>
+          <ArrowLeft size={16} style={{ transform: 'scaleX(-1)' }} /> رجوع للموقع
+        </button>
+
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 30 }}><BrandLockup size={24} /></div>
+
+        <div style={{ display: 'flex', gap: 6, background: 'rgba(255,255,255,0.04)', borderRadius: 12, padding: 5, marginBottom: 22 }}>
+          {Object.entries(roleConfig).map(([key, cfg]) => (
+            <button key={key} onClick={() => { setRole(key); setError(''); }} className="focus-ring" style={{
+              flex: 1, padding: '10px 8px', borderRadius: 9, border: 'none', cursor: 'pointer',
+              background: role === key ? COLORS.gold : 'transparent', color: role === key ? COLORS.bg : '#cfc6b3',
+              fontWeight: 700, fontSize: 13.5, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, transition: 'all .15s',
+            }}><cfg.icon size={15} /> {cfg.label}</button>
+          ))}
+        </div>
+
+        <form onSubmit={handleSubmit} style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${COLORS.border}`, borderRadius: 16, padding: 28 }}>
+          <label style={{ display: 'block', fontSize: 13, color: '#cfc6b3', marginBottom: 7, fontWeight: 600 }}>البريد الإلكتروني</label>
+          <input value={email} onChange={e => setEmail(e.target.value)} placeholder="name@mamnoon.com" className="focus-ring"
+            style={{ width: '100%', padding: '12px 14px', borderRadius: 9, border: `1px solid ${COLORS.border}`, background: COLORS.bgAlt, color: COLORS.cream, fontSize: 15, marginBottom: 18 }} />
+
+          <label style={{ display: 'block', fontSize: 13, color: '#cfc6b3', marginBottom: 7, fontWeight: 600 }}>كلمة السر</label>
+          <div style={{ position: 'relative', marginBottom: 8 }}>
+            <input type={showPw ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••" className="focus-ring"
+              style={{ width: '100%', padding: '12px 14px', borderRadius: 9, border: `1px solid ${COLORS.border}`, background: COLORS.bgAlt, color: COLORS.cream, fontSize: 15 }} />
+            <button type="button" onClick={() => setShowPw(s => !s)} style={{ position: 'absolute', insetInlineStart: 10, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#8a8275', padding: 4 }}>
+              {showPw ? <EyeOff size={17} /> : <Eye size={17} />}
+            </button>
+          </div>
+          <div style={{ fontSize: 12, color: '#6e675c', marginBottom: 18 }}>{roleConfig[role].hint}</div>
+
+          {error && <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: '#e0a0a0', fontSize: 13, marginBottom: 16, background: 'rgba(156,59,59,0.15)', padding: '9px 12px', borderRadius: 8 }}><AlertCircle size={15} /> {error}</div>}
+
+          <button type="submit" className="focus-ring" style={{ width: '100%', background: COLORS.gold, color: COLORS.bg, border: 'none', padding: '13px', borderRadius: 10, fontWeight: 800, fontSize: 15.5, cursor: 'pointer' }}>دخول</button>
+        </form>
+
+        {role === 'admin' && (
+          <div style={{ marginTop: 16, textAlign: 'center', fontSize: 12, color: '#5a5448' }}>
+            admin@mamnoon.com / Mamnoon@2026
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ============================================================
+   SHARED DASHBOARD PRIMITIVES
+   ============================================================ */
+function DashboardShell({ title, subtitle, roleLabel, navItems, activeNav, setActiveNav, onLogout, children }) {
+  return (
+    <div style={{ background: COLORS.cream, minHeight: '100vh', display: 'flex' }}>
+      <aside style={{ width: 232, background: COLORS.bg, color: COLORS.cream, display: 'flex', flexDirection: 'column', padding: '24px 16px', flexShrink: 0, position: 'sticky', top: 0, height: '100vh' }}>
+        <div style={{ padding: '0 8px', marginBottom: 6 }}><BrandLockup size={22} /></div>
+        <div style={{ fontSize: 12, color: '#8a8275', padding: '0 8px', marginBottom: 26 }}>{roleLabel}</div>
+        <nav style={{ display: 'flex', flexDirection: 'column', gap: 4, flex: 1, overflowY: 'auto' }}>
+          {navItems.map(item => (
+            <button key={item.key} onClick={() => setActiveNav(item.key)} className="focus-ring" style={{
+              display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', borderRadius: 9, border: 'none', cursor: 'pointer',
+              textAlign: 'right', fontSize: 14, fontWeight: 600,
+              background: activeNav === item.key ? COLORS.goldDim : 'transparent',
+              color: activeNav === item.key ? COLORS.gold : '#cfc6b3',
+            }}><item.icon size={17} /> {item.label}</button>
+          ))}
+        </nav>
+        <button onClick={onLogout} className="focus-ring" style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', borderRadius: 9, border: 'none', cursor: 'pointer', background: 'transparent', color: '#a8a092', fontSize: 14, marginTop: 12 }}>
+          <LogOut size={17} /> تسجيل الخروج
+        </button>
+      </aside>
+      <main style={{ flex: 1, padding: '32px 36px', minWidth: 0, overflowX: 'hidden' }}>
+        <div style={{ marginBottom: 26 }}>
+          <h1 style={{ fontSize: 23, fontWeight: 800, color: COLORS.ink, margin: 0 }}>{title}</h1>
+          {subtitle && <p style={{ fontSize: 13.5, color: COLORS.inkDim, margin: '5px 0 0' }}>{subtitle}</p>}
+        </div>
+        {children}
+      </main>
+    </div>
+  );
+}
+
+function StatCard({ icon: Icon, label, value, accent }) {
+  return (
+    <div style={{ background: '#fff', border: '1px solid #e8e0cf', borderRadius: 14, padding: '18px 20px', display: 'flex', alignItems: 'center', gap: 14 }}>
+      <div style={{ width: 40, height: 40, borderRadius: 10, background: accent || COLORS.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <Icon size={19} color={COLORS.cream} />
+      </div>
+      <div><div style={{ fontSize: 21, fontWeight: 800, color: COLORS.ink }}>{value}</div><div style={{ fontSize: 12.5, color: '#8a7f68' }}>{label}</div></div>
+    </div>
+  );
+}
+
+function Modal({ title, onClose, children, width = 480 }) {
+  return (
+    <div style={{ position: 'fixed', inset: 0, background: 'rgba(15,30,25,0.55)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100, padding: 20 }} onClick={onClose}>
+      <div onClick={e => e.stopPropagation()} style={{ background: '#fff', borderRadius: 16, padding: 26, width: '100%', maxWidth: width, maxHeight: '88vh', overflowY: 'auto', animation: 'fadeUp .2s ease' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+          <h3 style={{ fontSize: 17, fontWeight: 800, margin: 0, color: COLORS.ink }}>{title}</h3>
+          <button onClick={onClose} className="focus-ring" style={{ background: '#f3eee0', border: 'none', borderRadius: 8, width: 30, height: 30, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><X size={16} color="#5a5340" /></button>
+        </div>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function FormField({ label, children, hint }) {
+  return (
+    <div style={{ marginBottom: 14 }}>
+      <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#4a4434', marginBottom: 6 }}>{label}</label>
+      {children}
+      {hint && <div style={{ fontSize: 11.5, color: '#9a9176', marginTop: 4 }}>{hint}</div>}
+    </div>
+  );
+}
+
+const inputStyle = { width: '100%', padding: '10px 13px', borderRadius: 9, border: '1px solid #e0d8c4', background: '#fbf9f2', fontSize: 14.5, color: COLORS.ink };
+
+function Pill({ children, tone = 'neutral' }) {
+  const tones = {
+    neutral: { bg: '#f3eee0', color: '#5a5340' }, good: { bg: '#e3eee3', color: '#2d5a3a' },
+    warn: { bg: '#f5e3d8', color: '#8a4a1e' }, bad: { bg: COLORS.redBg, color: COLORS.red },
+    gold: { bg: COLORS.goldDim, color: '#8a6a2e' },
+  };
+  const t = tones[tone];
+  return <span style={{ background: t.bg, color: t.color, fontSize: 12, fontWeight: 700, padding: '4px 10px', borderRadius: 999, display: 'inline-block', whiteSpace: 'nowrap' }}>{children}</span>;
+}
+
+function IconButton({ icon: Icon, onClick, tone = 'neutral', title }) {
+  const bg = { neutral: '#f3eee0', danger: COLORS.redBg, gold: COLORS.goldDim }[tone];
+  const color = { neutral: '#5a5340', danger: COLORS.red, gold: '#8a6a2e' }[tone];
+  return (
+    <button onClick={onClick} title={title} className="focus-ring" style={{ background: bg, border: 'none', borderRadius: 8, width: 32, height: 32, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+      <Icon size={15} color={color} />
+    </button>
+  );
+}
+
+function CredentialBox({ email, password }) {
+  const [copied, setCopied] = useState(false);
+  function copy() {
+    const text = `البريد: ${email}\nكلمة السر: ${password}`;
+    if (navigator.clipboard) navigator.clipboard.writeText(text).then(() => { setCopied(true); setTimeout(() => setCopied(false), 1600); });
+  }
+  return (
+    <div style={{ background: COLORS.goldDim, border: '1px solid rgba(212,175,106,0.35)', borderRadius: 10, padding: '12px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}>
+      <div style={{ fontSize: 13, lineHeight: 1.7 }}>
+        <div style={{ color: '#5a4a20', fontWeight: 600 }}>البريد: <span style={{ fontFamily: 'monospace' }}>{email}</span></div>
+        <div style={{ color: '#5a4a20', fontWeight: 600 }}>كلمة السر: <span style={{ fontFamily: 'monospace' }}>{password}</span></div>
+      </div>
+      <button onClick={copy} className="focus-ring" style={{ background: '#fff', border: '1px solid rgba(212,175,106,0.5)', borderRadius: 8, padding: '7px 11px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5, fontSize: 12.5, fontWeight: 700, color: '#8a6a2e', flexShrink: 0 }}>
+        <Copy size={13} /> {copied ? 'تم النسخ' : 'نسخ'}
+      </button>
+    </div>
+  );
+}
+
+/* ============================================================
+   ADMIN DASHBOARD — the heart of the system
+   ============================================================ */
+function AdminDashboard({ students, setStudents, teachers, setTeachers, parents, setParents, sessions, setSessions, payments, setPayments, onLogout }) {
+  const [nav, setNav] = useState('overview');
+
+  const navItems = [
+    { key: 'overview', label: 'نظرة عامة', icon: BarChart3 },
+    { key: 'students', label: 'الطلاب', icon: Users },
+    { key: 'teachers', label: 'المعلمون', icon: GraduationCap },
+    { key: 'parents', label: 'أولياء الأمور', icon: UserCircle },
+    { key: 'payments', label: 'المدفوعات', icon: Wallet },
+  ];
+
+  const titles = {
+    overview: ['نظرة عامة', 'الأداء العام للأكاديمية هذا الشهر'],
+    students: ['إدارة الطلاب', 'إضافة الطلاب، ربطهم بمعلم وباقة، ومتابعة تقدمهم'],
+    teachers: ['إدارة المعلمين', 'إضافة معلمين وتحديد نسبتهم من كل باقة'],
+    parents: ['أولياء الأمور', 'حسابات المتابعة المرتبطة بكل طالب'],
+    payments: ['المدفوعات', 'تسجيل المدفوعات ومتابعة المواعيد المستحقة'],
+  };
+
+  return (
+    <DashboardShell title={titles[nav][0]} subtitle={titles[nav][1]} roleLabel="لوحة الأدمن" navItems={navItems} activeNav={nav} setActiveNav={setNav} onLogout={onLogout}>
+      {nav === 'overview' && <AdminOverview students={students} teachers={teachers} parents={parents} payments={payments} setNav={setNav} />}
+      {nav === 'students' && <AdminStudents students={students} setStudents={setStudents} teachers={teachers} parents={parents} setParents={setParents} payments={payments} setPayments={setPayments} />}
+      {nav === 'teachers' && <AdminTeachers teachers={teachers} setTeachers={setTeachers} students={students} payments={payments} />}
+      {nav === 'parents' && <AdminParents parents={parents} setParents={setParents} students={students} setStudents={setStudents} />}
+      {nav === 'payments' && <AdminPayments students={students} setStudents={setStudents} teachers={teachers} payments={payments} setPayments={setPayments} />}
+    </DashboardShell>
+  );
+}
+
+/* ---------- OVERVIEW ---------- */
+function AdminOverview({ students, teachers, parents, payments, setNav }) {
+  const activeStudents = students.filter(s => s.active !== false);
+  const monthlyRevenue = activeStudents.reduce((sum, s) => sum + pkgOf(s.package).price, 0);
+  const monthlyAcademyShare = activeStudents.reduce((sum, s) => {
+    const t = teachers.find(t => t.id === s.teacherId);
+    return sum + teacherSplit(t, s.package).academyShare;
+  }, 0);
+  const overdue = activeStudents.filter(s => paymentStatus(s) === 'overdue');
+  const dueSoonOrGrace = activeStudents.filter(s => paymentStatus(s) === 'grace');
+
+  return (
+    <div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(190px,1fr))', gap: 14, marginBottom: 28 }}>
+        <StatCard icon={Users} label="طلاب نشطون" value={activeStudents.length} />
+        <StatCard icon={GraduationCap} label="معلمون" value={teachers.length} accent={COLORS.green} />
+        <StatCard icon={Wallet} label="إيراد الشهر (متوقع)" value={`${monthlyRevenue.toLocaleString('ar-EG')} ج`} accent={COLORS.gold} />
+        <StatCard icon={TrendingUp} label="نصيب الأكاديمية" value={`${monthlyAcademyShare.toLocaleString('ar-EG')} ج`} accent="#7a8f5a" />
+      </div>
+
+      {(overdue.length > 0 || dueSoonOrGrace.length > 0) && (
+        <div style={{ background: '#fff', border: '1px solid #e8e0cf', borderRadius: 14, padding: 20, marginBottom: 24 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontWeight: 800, fontSize: 15 }}><AlertCircle size={17} color={COLORS.red} /> يحتاجون متابعة الدفع</div>
+            <button onClick={() => setNav('payments')} className="focus-ring" style={{ background: 'none', border: 'none', color: COLORS.gold, fontSize: 13, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}>عرض الكل <ChevronRight size={14} style={{ transform: 'scaleX(-1)' }} /></button>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {[...overdue, ...dueSoonOrGrace].slice(0, 5).map(s => (
+              <div key={s.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 12px', background: '#fbf9f2', borderRadius: 9 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <span style={{ fontWeight: 700, fontSize: 14 }}>{s.name}</span>
+                  <Pill tone={paymentStatus(s) === 'overdue' ? 'bad' : 'warn'}>{paymentStatus(s) === 'overdue' ? 'متأخر' : 'قارب الاستحقاق'}</Pill>
+                </div>
+                <span style={{ fontSize: 12.5, color: '#8a7f68' }}>آخر دفعة: {formatDate(s.lastPaymentDate)}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div style={{ background: '#fff', border: '1px solid #e8e0cf', borderRadius: 14, padding: 20 }}>
+        <div style={{ fontWeight: 800, fontSize: 15, marginBottom: 14 }}>توزيع الطلاب على المعلمين</div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          {teachers.map(t => {
+            const count = activeStudents.filter(s => s.teacherId === t.id).length;
+            const earning = activeStudents.filter(s => s.teacherId === t.id).reduce((sum, s) => sum + teacherSplit(t, s.package).teacherShare, 0);
+            return (
+              <div key={t.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '11px 12px', background: '#fbf9f2', borderRadius: 9 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <div style={{ width: 32, height: 32, borderRadius: 8, background: COLORS.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', color: COLORS.gold, fontWeight: 800, fontSize: 13 }}>{t.name[0]}</div>
+                  <div><div style={{ fontWeight: 700, fontSize: 13.5 }}>{t.name}</div><div style={{ fontSize: 11.5, color: '#9a9176' }}>{count} طالب</div></div>
+                </div>
+                <div style={{ fontWeight: 800, fontSize: 14, color: '#2d5a3a' }}>{earning.toLocaleString('ar-EG')} ج / شهر</div>
+              </div>
+            );
+          })}
+          {teachers.length === 0 && <div style={{ color: '#9a9176', fontSize: 13.5, textAlign: 'center', padding: 20 }}>لا يوجد معلمون مسجّلون بعد</div>}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ---------- STUDENTS ---------- */
+function AdminStudents({ students, setStudents, teachers, parents, setParents, payments, setPayments }) {
+  const [showAdd, setShowAdd] = useState(false);
+  const [editing, setEditing] = useState(null);
+  const [search, setSearch] = useState('');
+  const [newCreds, setNewCreds] = useState(null); // { studentEmail, studentPw, parentEmail, parentPw, isNewParent }
+
+  const filtered = students.filter(s => s.name.toLowerCase().includes(search.toLowerCase()));
+
+  function handleAdd(data) {
+    const allStudentEmails = students.map(s => s.email);
+    const allParentEmails = parents.map(p => p.email);
+    const studentId = uid('s');
+    const studentEmail = genEmail(data.name, 'mamnoon-students.com', allStudentEmails);
+    const studentPw = genPassword();
+
+    let parentId = data.existingParentId;
+    let parentEmail = null, parentPw = null, isNewParent = false;
+
+    if (!parentId && data.parentName) {
+      parentId = uid('p');
+      parentEmail = genEmail(data.parentName, 'mamnoon-family.com', allParentEmails);
+      parentPw = genPassword();
+      isNewParent = true;
+      setParents(prev => [...prev, {
+        id: parentId, name: data.parentName, phone: data.parentPhone || '',
+        email: parentEmail, password: parentPw, studentIds: [studentId], createdAt: new Date().toISOString(),
+      }]);
+    } else if (parentId) {
+      setParents(prev => prev.map(p => p.id === parentId ? { ...p, studentIds: [...p.studentIds, studentId] } : p));
+    }
+
+    const newStudent = {
+      id: studentId, name: data.name, age: Number(data.age) || null,
+      email: studentEmail, password: studentPw,
+      parentId: parentId || null, teacherId: data.teacherId || null, package: data.package,
+      zoomLink: data.zoomLink || '', currentSurah: data.currentSurah || 'لم يبدأ بعد',
+      memorizedPages: 0, totalPagesTarget: 20,
+      lastPaymentDate: data.markPaidNow ? new Date().toISOString() : null,
+      joinedAt: new Date().toISOString(), active: true,
+    };
+    setStudents(prev => [...prev, newStudent]);
+
+    if (data.markPaidNow) {
+      const t = teachers.find(t => t.id === data.teacherId);
+      const split = teacherSplit(t, data.package);
+      setPayments(prev => [...prev, {
+        id: uid('pay'), studentId, amount: split.total, teacherShare: split.teacherShare, academyShare: split.academyShare,
+        method: 'فودافون كاش', recordedBy: 'تلقائي عند التسجيل', date: new Date().toISOString(),
+      }]);
+    }
+
+    setNewCreds({
+      studentName: data.name, studentEmail, studentPw,
+      parentEmail: parentEmail || (parents.find(p => p.id === parentId)?.email), parentPw, isNewParent,
+    });
+    setShowAdd(false);
+  }
+
+  function handleUpdate(id, patch) { setStudents(prev => prev.map(s => s.id === id ? { ...s, ...patch } : s)); }
+  function handleDelete(id) {
+    if (!confirm('متأكد من حذف هذا الطالب؟ لا يمكن التراجع عن هذا الإجراء.')) return;
+    setStudents(prev => prev.filter(s => s.id !== id));
+  }
+
+  return (
+    <div>
+      <div style={{ display: 'flex', gap: 10, marginBottom: 18, flexWrap: 'wrap' }}>
+        <div style={{ flex: 1, minWidth: 200, position: 'relative' }}>
+          <Search size={15} style={{ position: 'absolute', insetInlineStart: 12, top: '50%', transform: 'translateY(-50%)', color: '#9a9176' }} />
+          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="بحث باسم الطالب..." className="focus-ring"
+            style={{ ...inputStyle, paddingInlineStart: 36 }} />
+        </div>
+        <button onClick={() => setShowAdd(true)} className="focus-ring" style={{ background: COLORS.bg, color: COLORS.cream, border: 'none', borderRadius: 9, padding: '10px 18px', fontWeight: 700, fontSize: 14, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 7 }}>
+          <Plus size={16} /> إضافة طالب
+        </button>
+      </div>
+
+      <div style={{ background: '#fff', borderRadius: 14, border: '1px solid #e8e0cf', overflow: 'hidden' }}>
+        <table>
+          <thead>
+            <tr style={{ background: '#fbf9f2', borderBottom: '1px solid #e8e0cf' }}>
+              {['الطالب', 'المعلم', 'الباقة', 'التقدم', 'حالة الدفع', ''].map((h, i) => (
+                <th key={i} style={{ padding: '12px 16px', textAlign: 'right', fontSize: 12.5, color: '#8a7f68', fontWeight: 700 }}>{h}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {filtered.map(s => {
+              const teacher = teachers.find(t => t.id === s.teacherId);
+              const status = paymentStatus(s);
+              return (
+                <tr key={s.id} style={{ borderBottom: '1px solid #f0ead9' }}>
+                  <td style={{ padding: '13px 16px' }}>
+                    <div style={{ fontWeight: 700, fontSize: 14, color: COLORS.ink }}>{s.name}</div>
+                    <div style={{ fontSize: 11.5, color: '#9a9176' }}>{s.age ? `${s.age} سنوات` : ''} · {s.email}</div>
+                  </td>
+                  <td style={{ padding: '13px 16px', fontSize: 13.5 }}>{teacher ? teacher.name : <span style={{ color: '#c08a8a' }}>غير معيّن</span>}</td>
+                  <td style={{ padding: '13px 16px' }}><Pill tone="gold">{pkgOf(s.package).label}</Pill></td>
+                  <td style={{ padding: '13px 16px', fontSize: 13 }}>{s.memorizedPages} / {s.totalPagesTarget} صفحة</td>
+                  <td style={{ padding: '13px 16px' }}>
+                    <Pill tone={status === 'paid' ? 'good' : status === 'grace' ? 'warn' : 'bad'}>
+                      {status === 'paid' ? 'مدفوع' : status === 'grace' ? 'قارب الاستحقاق' : status === 'overdue' ? 'متأخر' : 'لم يُدفع'}
+                    </Pill>
+                  </td>
+                  <td style={{ padding: '13px 16px' }}>
+                    <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end' }}>
+                      <IconButton icon={Edit3} onClick={() => setEditing(s)} title="تعديل" />
+                      <IconButton icon={Trash2} tone="danger" onClick={() => handleDelete(s.id)} title="حذف" />
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
+            {filtered.length === 0 && <tr><td colSpan={6} style={{ padding: 30, textAlign: 'center', color: '#9a9176', fontSize: 13.5 }}>لا يوجد طلاب مطابقون</td></tr>}
+          </tbody>
+        </table>
+      </div>
+
+      {showAdd && <AddStudentModal onClose={() => setShowAdd(false)} onSubmit={handleAdd} teachers={teachers} parents={parents} />}
+      {editing && <EditStudentModal student={editing} teachers={teachers} onClose={() => setEditing(null)} onSave={patch => { handleUpdate(editing.id, patch); setEditing(null); }} />}
+      {newCreds && <NewCredentialsModal creds={newCreds} onClose={() => setNewCreds(null)} />}
+    </div>
+  );
+}
+
+function AddStudentModal({ onClose, onSubmit, teachers, parents }) {
+  const [name, setName] = useState('');
+  const [age, setAge] = useState('');
+  const [teacherId, setTeacherId] = useState(teachers[0]?.id || '');
+  const [pkg, setPkg] = useState('basic');
+  const [zoomLink, setZoomLink] = useState('');
+  const [currentSurah, setCurrentSurah] = useState('');
+  const [parentMode, setParentMode] = useState('new'); // new | existing
+  const [existingParentId, setExistingParentId] = useState(parents[0]?.id || '');
+  const [parentName, setParentName] = useState('');
+  const [parentPhone, setParentPhone] = useState('');
+  const [markPaidNow, setMarkPaidNow] = useState(false);
+
+  function submit(e) {
+    e.preventDefault();
+    if (!name.trim()) return;
+    onSubmit({
+      name: name.trim(), age, teacherId, package: pkg, zoomLink, currentSurah, markPaidNow,
+      existingParentId: parentMode === 'existing' ? existingParentId : null,
+      parentName: parentMode === 'new' ? parentName.trim() : null,
+      parentPhone: parentMode === 'new' ? parentPhone.trim() : null,
+    });
+  }
+
+  return (
+    <Modal title="إضافة طالب جديد" onClose={onClose} width={520}>
+      <form onSubmit={submit}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 110px', gap: 12 }}>
+          <FormField label="اسم الطالب"><input value={name} onChange={e => setName(e.target.value)} className="focus-ring" style={inputStyle} required /></FormField>
+          <FormField label="السن"><input value={age} onChange={e => setAge(e.target.value)} type="number" className="focus-ring" style={inputStyle} /></FormField>
+        </div>
+
+        <FormField label="المعلم المسؤول">
+          <select value={teacherId} onChange={e => setTeacherId(e.target.value)} className="focus-ring" style={inputStyle}>
+            <option value="">— بدون تعيين الآن —</option>
+            {teachers.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
+          </select>
+        </FormField>
+
+        <FormField label="الباقة">
+          <div style={{ display: 'flex', gap: 10 }}>
+            {Object.values(PACKAGES).map(p => (
+              <button key={p.id} type="button" onClick={() => setPkg(p.id)} className="focus-ring" style={{
+                flex: 1, padding: '10px', borderRadius: 9, border: pkg === p.id ? `2px solid ${COLORS.gold}` : '1px solid #e0d8c4',
+                background: pkg === p.id ? COLORS.goldDim : '#fbf9f2', cursor: 'pointer', textAlign: 'center',
+              }}>
+                <div style={{ fontWeight: 700, fontSize: 13 }}>{p.label}</div>
+                <div style={{ fontSize: 12, color: '#8a7f68' }}>{p.sessions} حصص · {p.price} ج</div>
+              </button>
+            ))}
+          </div>
+        </FormField>
+
+        <FormField label="رابط الحصة (زووم / ميت)" hint="يمكن إضافته أو تعديله لاحقاً من ملف الطالب">
+          <input value={zoomLink} onChange={e => setZoomLink(e.target.value)} placeholder="https://zoom.us/j/..." className="focus-ring" style={inputStyle} />
+        </FormField>
+
+        <FormField label="السورة الحالية (اختياري)"><input value={currentSurah} onChange={e => setCurrentSurah(e.target.value)} className="focus-ring" style={inputStyle} /></FormField>
+
+        <div style={{ height: 1, background: '#f0ead9', margin: '18px 0' }} />
+
+        <FormField label="ولي الأمر">
+          <div style={{ display: 'flex', gap: 8, marginBottom: 10 }}>
+            <button type="button" onClick={() => setParentMode('new')} className="focus-ring" style={{ flex: 1, padding: '8px', borderRadius: 8, border: 'none', cursor: 'pointer', background: parentMode === 'new' ? COLORS.bg : '#f3eee0', color: parentMode === 'new' ? '#fff' : '#5a5340', fontWeight: 700, fontSize: 12.5 }}>ولي أمر جديد</button>
+            <button type="button" onClick={() => setParentMode('existing')} className="focus-ring" style={{ flex: 1, padding: '8px', borderRadius: 8, border: 'none', cursor: 'pointer', background: parentMode === 'existing' ? COLORS.bg : '#f3eee0', color: parentMode === 'existing' ? '#fff' : '#5a5340', fontWeight: 700, fontSize: 12.5 }}>ربط بولي أمر موجود</button>
+          </div>
+          {parentMode === 'new' ? (
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+              <input value={parentName} onChange={e => setParentName(e.target.value)} placeholder="اسم ولي الأمر" className="focus-ring" style={inputStyle} />
+              <input value={parentPhone} onChange={e => setParentPhone(e.target.value)} placeholder="رقم الهاتف" className="focus-ring" style={inputStyle} />
+            </div>
+          ) : (
+            <select value={existingParentId} onChange={e => setExistingParentId(e.target.value)} className="focus-ring" style={inputStyle}>
+              {parents.length === 0 && <option value="">لا يوجد أولياء أمور مسجّلون</option>}
+              {parents.map(p => <option key={p.id} value={p.id}>{p.name} — {p.phone}</option>)}
+            </select>
+          )}
+        </FormField>
+
+        <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: '#4a4434', fontWeight: 600, marginBottom: 18, cursor: 'pointer' }}>
+          <input type="checkbox" checked={markPaidNow} onChange={e => setMarkPaidNow(e.target.checked)} /> تم استلام دفعة الشهر الأول الآن (فودافون كاش)
+        </label>
+
+        <div style={{ display: 'flex', gap: 10 }}>
+          <button type="button" onClick={onClose} className="focus-ring" style={{ flex: 1, padding: '11px', borderRadius: 9, border: '1px solid #e0d8c4', background: '#fff', cursor: 'pointer', fontWeight: 700, fontSize: 14 }}>إلغاء</button>
+          <button type="submit" className="focus-ring" style={{ flex: 2, padding: '11px', borderRadius: 9, border: 'none', background: COLORS.gold, color: COLORS.bg, cursor: 'pointer', fontWeight: 800, fontSize: 14 }}>إضافة الطالب</button>
+        </div>
+      </form>
+    </Modal>
+  );
+}
+
+function EditStudentModal({ student, teachers, onClose, onSave }) {
+  const [teacherId, setTeacherId] = useState(student.teacherId || '');
+  const [pkg, setPkg] = useState(student.package);
+  const [zoomLink, setZoomLink] = useState(student.zoomLink || '');
+  const [currentSurah, setCurrentSurah] = useState(student.currentSurah || '');
+  const [memorizedPages, setMemorizedPages] = useState(student.memorizedPages || 0);
+  const [active, setActive] = useState(student.active !== false);
+
+  function submit(e) {
+    e.preventDefault();
+    onSave({ teacherId, package: pkg, zoomLink, currentSurah, memorizedPages: Number(memorizedPages), active });
+  }
+
+  return (
+    <Modal title={`تعديل بيانات: ${student.name}`} onClose={onClose} width={500}>
+      <form onSubmit={submit}>
+        <FormField label="المعلم المسؤول">
+          <select value={teacherId} onChange={e => setTeacherId(e.target.value)} className="focus-ring" style={inputStyle}>
+            <option value="">— بدون تعيين —</option>
+            {teachers.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
+          </select>
+        </FormField>
+        <FormField label="الباقة">
+          <select value={pkg} onChange={e => setPkg(e.target.value)} className="focus-ring" style={inputStyle}>
+            {Object.values(PACKAGES).map(p => <option key={p.id} value={p.id}>{p.label} ({p.sessions} حصص - {p.price} ج)</option>)}
+          </select>
+        </FormField>
+        <FormField label="رابط الحصة"><input value={zoomLink} onChange={e => setZoomLink(e.target.value)} className="focus-ring" style={inputStyle} /></FormField>
+        <FormField label="السورة الحالية"><input value={currentSurah} onChange={e => setCurrentSurah(e.target.value)} className="focus-ring" style={inputStyle} /></FormField>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+          <FormField label="صفحات محفوظة"><input type="number" value={memorizedPages} onChange={e => setMemorizedPages(e.target.value)} className="focus-ring" style={inputStyle} /></FormField>
+          <FormField label="الحالة">
+            <select value={active ? '1' : '0'} onChange={e => setActive(e.target.value === '1')} className="focus-ring" style={inputStyle}>
+              <option value="1">نشط</option><option value="0">متوقف</option>
+            </select>
+          </FormField>
+        </div>
+        <div style={{ display: 'flex', gap: 10, marginTop: 8 }}>
+          <button type="button" onClick={onClose} className="focus-ring" style={{ flex: 1, padding: '11px', borderRadius: 9, border: '1px solid #e0d8c4', background: '#fff', cursor: 'pointer', fontWeight: 700, fontSize: 14 }}>إلغاء</button>
+          <button type="submit" className="focus-ring" style={{ flex: 2, padding: '11px', borderRadius: 9, border: 'none', background: COLORS.gold, color: COLORS.bg, cursor: 'pointer', fontWeight: 800, fontSize: 14 }}>حفظ التعديلات</button>
+        </div>
+      </form>
+    </Modal>
+  );
+}
+
+function NewCredentialsModal({ creds, onClose }) {
+  return (
+    <Modal title="تم الإنشاء بنجاح" onClose={onClose} width={460}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 18, color: '#2d5a3a' }}>
+        <CheckCircle2 size={20} /><span style={{ fontWeight: 700, fontSize: 14.5 }}>تم تسجيل {creds.studentName} بنجاح</span>
+      </div>
+      <div style={{ fontSize: 13, fontWeight: 700, color: '#4a4434', marginBottom: 8 }}>بيانات دخول الطالب (تُستخدم عبر حساب ولي الأمر):</div>
+      <CredentialBox email={creds.studentEmail} password={creds.studentPw} />
+      {creds.parentPw && (
+        <>
+          <div style={{ fontSize: 13, fontWeight: 700, color: '#4a4434', margin: '16px 0 8px' }}>{creds.isNewParent ? 'بيانات دخول ولي الأمر (جديد):' : 'ولي الأمر مرتبط بحساب موجود:'}</div>
+          <CredentialBox email={creds.parentEmail} password={creds.parentPw} />
+        </>
+      )}
+      <div style={{ fontSize: 12, color: '#9a9176', marginTop: 14, lineHeight: 1.7 }}>أرسل هذه البيانات لولي الأمر عبر واتساب ليستخدمها في تسجيل الدخول ومتابعة ابنه.</div>
+      <button onClick={onClose} className="focus-ring" style={{ width: '100%', marginTop: 18, padding: '11px', borderRadius: 9, border: 'none', background: COLORS.bg, color: COLORS.cream, cursor: 'pointer', fontWeight: 700, fontSize: 14 }}>تم</button>
+    </Modal>
+  );
+}
+
+/* ---------- TEACHERS ---------- */
+function AdminTeachers({ teachers, setTeachers, students, payments }) {
+  const [showAdd, setShowAdd] = useState(false);
+  const [editing, setEditing] = useState(null);
+  const [newCreds, setNewCreds] = useState(null);
+
+  function handleAdd(data) {
+    const email = genEmail(data.name, 'mamnoon-teachers.com', teachers.map(t => t.email));
+    const password = genPassword();
+    const newTeacher = { id: uid('t'), name: data.name, phone: data.phone, email, password, bio: data.bio, sharePercent: Number(data.sharePercent), active: true, createdAt: new Date().toISOString() };
+    setTeachers(prev => [...prev, newTeacher]);
+    setNewCreds({ name: data.name, email, password });
+    setShowAdd(false);
+  }
+  function handleUpdate(id, patch) { setTeachers(prev => prev.map(t => t.id === id ? { ...t, ...patch } : t)); }
+  function handleDelete(id) {
+    const count = students.filter(s => s.teacherId === id).length;
+    if (count > 0) { alert(`لا يمكن حذف هذا المعلم، لديه ${count} طالب مرتبط به. أعد تعيين طلابه أولاً.`); return; }
+    if (!confirm('متأكد من حذف هذا المعلم؟')) return;
+    setTeachers(prev => prev.filter(t => t.id !== id));
+  }
+
+  return (
+    <div>
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 18 }}>
+        <button onClick={() => setShowAdd(true)} className="focus-ring" style={{ background: COLORS.bg, color: COLORS.cream, border: 'none', borderRadius: 9, padding: '10px 18px', fontWeight: 700, fontSize: 14, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 7 }}>
+          <Plus size={16} /> إضافة معلم
+        </button>
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(310px,1fr))', gap: 14 }}>
+        {teachers.map(t => {
+          const myStudents = students.filter(s => s.teacherId === t.id && s.active !== false);
+          const monthlyEarning = myStudents.reduce((sum, s) => sum + teacherSplit(t, s.package).teacherShare, 0);
+          return (
+            <div key={t.id} style={{ background: '#fff', border: '1px solid #e8e0cf', borderRadius: 14, padding: 20 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
+                <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+                  <div style={{ width: 42, height: 42, borderRadius: 10, background: COLORS.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', color: COLORS.gold, fontWeight: 800, fontSize: 16 }}>{t.name[0]}</div>
+                  <div><div style={{ fontWeight: 800, fontSize: 15, color: COLORS.ink }}>{t.name}</div><div style={{ fontSize: 12, color: '#9a9176' }}>{t.email}</div></div>
+                </div>
+                <div style={{ display: 'flex', gap: 6 }}>
+                  <IconButton icon={Edit3} onClick={() => setEditing(t)} title="تعديل" />
+                  <IconButton icon={Trash2} tone="danger" onClick={() => handleDelete(t.id)} title="حذف" />
+                </div>
+              </div>
+              <p style={{ fontSize: 12.5, color: '#8a7f68', lineHeight: 1.6, margin: '0 0 14px' }}>{t.bio}</p>
+              <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
+                <Pill tone="gold">نسبته {t.sharePercent}%</Pill>
+                <Pill tone="neutral">{myStudents.length} طالب</Pill>
+              </div>
+              <div style={{ background: '#fbf9f2', borderRadius: 9, padding: '10px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontSize: 12.5, color: '#8a7f68' }}>دخله الشهري المتوقع</span>
+                <span style={{ fontWeight: 800, fontSize: 15, color: '#2d5a3a' }}>{monthlyEarning.toLocaleString('ar-EG')} ج</span>
+              </div>
+            </div>
+          );
+        })}
+        {teachers.length === 0 && <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: 40, color: '#9a9176' }}>لا يوجد معلمون مسجّلون بعد</div>}
+      </div>
+
+      {showAdd && <AddTeacherModal onClose={() => setShowAdd(false)} onSubmit={handleAdd} />}
+      {editing && <EditTeacherModal teacher={editing} onClose={() => setEditing(null)} onSave={patch => { handleUpdate(editing.id, patch); setEditing(null); }} />}
+      {newCreds && (
+        <Modal title="تم إضافة المعلم" onClose={() => setNewCreds(null)} width={440}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16, color: '#2d5a3a' }}><CheckCircle2 size={20} /><span style={{ fontWeight: 700 }}>{newCreds.name} جاهز للدخول الآن</span></div>
+          <CredentialBox email={newCreds.email} password={newCreds.password} />
+          <div style={{ fontSize: 12, color: '#9a9176', marginTop: 14 }}>أرسل هذه البيانات للمعلم عبر واتساب.</div>
+          <button onClick={() => setNewCreds(null)} className="focus-ring" style={{ width: '100%', marginTop: 16, padding: '11px', borderRadius: 9, border: 'none', background: COLORS.bg, color: COLORS.cream, cursor: 'pointer', fontWeight: 700 }}>تم</button>
+        </Modal>
+      )}
+    </div>
+  );
+}
+
+function AddTeacherModal({ onClose, onSubmit }) {
+  const [name, setName] = useState(''); const [phone, setPhone] = useState(''); const [bio, setBio] = useState(''); const [sharePercent, setSharePercent] = useState('60');
+  function submit(e) { e.preventDefault(); if (!name.trim()) return; onSubmit({ name: name.trim(), phone, bio, sharePercent }); }
+  return (
+    <Modal title="إضافة معلم جديد" onClose={onClose}>
+      <form onSubmit={submit}>
+        <FormField label="اسم المعلم"><input value={name} onChange={e => setName(e.target.value)} className="focus-ring" style={inputStyle} required /></FormField>
+        <FormField label="رقم الهاتف"><input value={phone} onChange={e => setPhone(e.target.value)} className="focus-ring" style={inputStyle} /></FormField>
+        <FormField label="نبذة (الإجازة، الخبرة)"><textarea value={bio} onChange={e => setBio(e.target.value)} rows={3} className="focus-ring" style={{ ...inputStyle, resize: 'vertical' }} /></FormField>
+        <FormField label="نسبته من كل باقة (%)" hint="النسبة الافتراضية المقترحة في البداية: 60%">
+          <input type="number" min="0" max="100" value={sharePercent} onChange={e => setSharePercent(e.target.value)} className="focus-ring" style={inputStyle} />
+        </FormField>
+        <div style={{ background: COLORS.goldDim, borderRadius: 9, padding: 12, fontSize: 12.5, color: '#5a4a20', marginBottom: 18 }}>
+          مثال: في الباقة الأساسية (250 ج) سيحصل المعلم على {Math.round(250 * Number(sharePercent || 0) / 100)} ج، وتحصل الأكاديمية على {250 - Math.round(250 * Number(sharePercent || 0) / 100)} ج.
+        </div>
+        <div style={{ display: 'flex', gap: 10 }}>
+          <button type="button" onClick={onClose} className="focus-ring" style={{ flex: 1, padding: '11px', borderRadius: 9, border: '1px solid #e0d8c4', background: '#fff', cursor: 'pointer', fontWeight: 700 }}>إلغاء</button>
+          <button type="submit" className="focus-ring" style={{ flex: 2, padding: '11px', borderRadius: 9, border: 'none', background: COLORS.gold, color: COLORS.bg, cursor: 'pointer', fontWeight: 800 }}>إضافة المعلم</button>
+        </div>
+      </form>
+    </Modal>
+  );
+}
+
+function EditTeacherModal({ teacher, onClose, onSave }) {
+  const [bio, setBio] = useState(teacher.bio); const [sharePercent, setSharePercent] = useState(teacher.sharePercent); const [active, setActive] = useState(teacher.active !== false);
+  function submit(e) { e.preventDefault(); onSave({ bio, sharePercent: Number(sharePercent), active }); }
+  return (
+    <Modal title={`تعديل: ${teacher.name}`} onClose={onClose}>
+      <form onSubmit={submit}>
+        <FormField label="نبذة"><textarea value={bio} onChange={e => setBio(e.target.value)} rows={3} className="focus-ring" style={{ ...inputStyle, resize: 'vertical' }} /></FormField>
+        <FormField label="نسبته (%)"><input type="number" min="0" max="100" value={sharePercent} onChange={e => setSharePercent(e.target.value)} className="focus-ring" style={inputStyle} /></FormField>
+        <FormField label="الحالة"><select value={active ? '1' : '0'} onChange={e => setActive(e.target.value === '1')} className="focus-ring" style={inputStyle}><option value="1">نشط</option><option value="0">متوقف</option></select></FormField>
+        <div style={{ display: 'flex', gap: 10, marginTop: 4 }}>
+          <button type="button" onClick={onClose} className="focus-ring" style={{ flex: 1, padding: '11px', borderRadius: 9, border: '1px solid #e0d8c4', background: '#fff', cursor: 'pointer', fontWeight: 700 }}>إلغاء</button>
+          <button type="submit" className="focus-ring" style={{ flex: 2, padding: '11px', borderRadius: 9, border: 'none', background: COLORS.gold, color: COLORS.bg, cursor: 'pointer', fontWeight: 800 }}>حفظ</button>
+        </div>
+      </form>
+    </Modal>
+  );
+}
+
+/* ---------- PARENTS ---------- */
+function AdminParents({ parents, setParents, students, setStudents }) {
+  const [resetFor, setResetFor] = useState(null);
+
+  function resetPassword(parentId) {
+    const newPw = genPassword();
+    setParents(prev => prev.map(p => p.id === parentId ? { ...p, password: newPw } : p));
+    setResetFor({ parent: parents.find(p => p.id === parentId), newPw });
+  }
+
+  return (
+    <div>
+      <div style={{ background: '#fff', borderRadius: 14, border: '1px solid #e8e0cf', overflow: 'hidden' }}>
+        <table>
+          <thead>
+            <tr style={{ background: '#fbf9f2', borderBottom: '1px solid #e8e0cf' }}>
+              {['ولي الأمر', 'الهاتف', 'الأبناء المسجّلون', ''].map((h, i) => <th key={i} style={{ padding: '12px 16px', textAlign: 'right', fontSize: 12.5, color: '#8a7f68', fontWeight: 700 }}>{h}</th>)}
+            </tr>
+          </thead>
+          <tbody>
+            {parents.map(p => {
+              const kids = students.filter(s => s.parentId === p.id);
+              return (
+                <tr key={p.id} style={{ borderBottom: '1px solid #f0ead9' }}>
+                  <td style={{ padding: '13px 16px' }}><div style={{ fontWeight: 700, fontSize: 14 }}>{p.name}</div><div style={{ fontSize: 11.5, color: '#9a9176' }}>{p.email}</div></td>
+                  <td style={{ padding: '13px 16px', fontSize: 13.5 }}>{p.phone}</td>
+                  <td style={{ padding: '13px 16px' }}><div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>{kids.map(k => <Pill key={k.id} tone="neutral">{k.name}</Pill>)}{kids.length === 0 && <span style={{ fontSize: 12.5, color: '#c08a8a' }}>بدون أبناء</span>}</div></td>
+                  <td style={{ padding: '13px 16px' }}><button onClick={() => resetPassword(p.id)} className="focus-ring" style={{ background: COLORS.goldDim, border: 'none', borderRadius: 8, padding: '7px 12px', cursor: 'pointer', fontSize: 12.5, fontWeight: 700, color: '#8a6a2e', display: 'flex', alignItems: 'center', gap: 5 }}><KeyRound size={13} /> إعادة تعيين كلمة السر</button></td>
+                </tr>
+              );
+            })}
+            {parents.length === 0 && <tr><td colSpan={4} style={{ padding: 30, textAlign: 'center', color: '#9a9176' }}>لا يوجد أولياء أمور مسجّلون بعد</td></tr>}
+          </tbody>
+        </table>
+      </div>
+      {resetFor && (
+        <Modal title="كلمة سر جديدة" onClose={() => setResetFor(null)} width={420}>
+          <div style={{ fontSize: 13.5, marginBottom: 12 }}>كلمة سر {resetFor.parent.name} الجديدة:</div>
+          <CredentialBox email={resetFor.parent.email} password={resetFor.newPw} />
+          <button onClick={() => setResetFor(null)} className="focus-ring" style={{ width: '100%', marginTop: 16, padding: '11px', borderRadius: 9, border: 'none', background: COLORS.bg, color: COLORS.cream, cursor: 'pointer', fontWeight: 700 }}>تم</button>
+        </Modal>
+      )}
+    </div>
+  );
+}
+
+/* ---------- PAYMENTS ---------- */
+function AdminPayments({ students, setStudents, teachers, payments, setPayments }) {
+  const [showAdd, setShowAdd] = useState(false);
+  const [filter, setFilter] = useState('all'); // all | overdue | grace | paid
+
+  const activeStudents = students.filter(s => s.active !== false);
+  const filteredStudents = activeStudents.filter(s => filter === 'all' || paymentStatus(s) === filter);
+
+  function recordPayment(studentId, manualAmount) {
+    const student = students.find(s => s.id === studentId);
+    const teacher = teachers.find(t => t.id === student.teacherId);
+    const split = teacherSplit(teacher, student.package);
+    const amount = manualAmount ? Number(manualAmount) : split.total;
+    const teacherShare = manualAmount ? Math.round((amount * (teacher?.sharePercent || 60)) / 100) : split.teacherShare;
+
+    setPayments(prev => [...prev, {
+      id: uid('pay'), studentId, amount, teacherShare, academyShare: amount - teacherShare,
+      method: 'فودافون كاش', recordedBy: manualAmount ? 'يدوي' : 'تلقائي', date: new Date().toISOString(),
+    }]);
+    setStudents(prev => prev.map(s => s.id === studentId ? { ...s, lastPaymentDate: new Date().toISOString() } : s));
+  }
+
+  const recentPayments = [...payments].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 8);
+
+  return (
+    <div>
+      <div style={{ display: 'flex', gap: 8, marginBottom: 20, flexWrap: 'wrap' }}>
+        {[{ k: 'all', l: 'الكل' }, { k: 'overdue', l: 'متأخر' }, { k: 'grace', l: 'قارب الاستحقاق' }, { k: 'paid', l: 'مدفوع' }].map(f => (
+          <button key={f.k} onClick={() => setFilter(f.k)} className="focus-ring" style={{
+            padding: '8px 16px', borderRadius: 999, border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 700,
+            background: filter === f.k ? COLORS.bg : '#f3eee0', color: filter === f.k ? '#fff' : '#5a5340',
+          }}>{f.l}</button>
+        ))}
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: 18, alignItems: 'flex-start' }}>
+        <div style={{ background: '#fff', borderRadius: 14, border: '1px solid #e8e0cf', overflow: 'hidden' }}>
+          <table>
+            <thead>
+              <tr style={{ background: '#fbf9f2', borderBottom: '1px solid #e8e0cf' }}>
+                {['الطالب', 'الباقة', 'آخر دفعة', 'الحالة', ''].map((h, i) => <th key={i} style={{ padding: '12px 14px', textAlign: 'right', fontSize: 12, color: '#8a7f68', fontWeight: 700 }}>{h}</th>)}
+              </tr>
+            </thead>
+            <tbody>
+              {filteredStudents.map(s => {
+                const status = paymentStatus(s);
+                return (
+                  <tr key={s.id} style={{ borderBottom: '1px solid #f0ead9' }}>
+                    <td style={{ padding: '12px 14px', fontWeight: 700, fontSize: 13.5 }}>{s.name}</td>
+                    <td style={{ padding: '12px 14px', fontSize: 12.5 }}>{pkgOf(s.package).price} ج</td>
+                    <td style={{ padding: '12px 14px', fontSize: 12.5, color: '#8a7f68' }}>{formatDate(s.lastPaymentDate)}</td>
+                    <td style={{ padding: '12px 14px' }}><Pill tone={status === 'paid' ? 'good' : status === 'grace' ? 'warn' : 'bad'}>{status === 'paid' ? 'مدفوع' : status === 'grace' ? 'قارب' : 'متأخر'}</Pill></td>
+                    <td style={{ padding: '12px 14px' }}>
+                      <button onClick={() => recordPayment(s.id)} className="focus-ring" style={{ background: COLORS.goldDim, border: 'none', borderRadius: 8, padding: '6px 12px', cursor: 'pointer', fontSize: 12, fontWeight: 700, color: '#8a6a2e' }}>تسجيل دفعة</button>
+                    </td>
+                  </tr>
+                );
+              })}
+              {filteredStudents.length === 0 && <tr><td colSpan={5} style={{ padding: 26, textAlign: 'center', color: '#9a9176', fontSize: 13 }}>لا يوجد طلاب في هذا التصنيف</td></tr>}
+            </tbody>
+          </table>
+        </div>
+
+        <div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+            <div style={{ fontWeight: 800, fontSize: 14.5 }}>سجل آخر المدفوعات</div>
+            <button onClick={() => setShowAdd(true)} className="focus-ring" style={{ background: 'none', border: 'none', color: COLORS.gold, fontSize: 12.5, fontWeight: 700, cursor: 'pointer' }}>+ تسجيل يدوي</button>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {recentPayments.map(p => {
+              const student = students.find(s => s.id === p.studentId);
+              return (
+                <div key={p.id} style={{ background: '#fff', border: '1px solid #e8e0cf', borderRadius: 10, padding: '10px 13px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+                    <span style={{ fontWeight: 700, fontSize: 13 }}>{student?.name || 'طالب محذوف'}</span>
+                    <span style={{ fontWeight: 800, fontSize: 13.5, color: '#2d5a3a' }}>{p.amount} ج</span>
+                  </div>
+                  <div style={{ fontSize: 11, color: '#9a9176', display: 'flex', justifyContent: 'space-between' }}>
+                    <span>{p.method} · {p.recordedBy}</span><span>{formatDateTime(p.date)}</span>
+                  </div>
+                </div>
+              );
+            })}
+            {recentPayments.length === 0 && <div style={{ fontSize: 12.5, color: '#9a9176', textAlign: 'center', padding: 16 }}>لا توجد مدفوعات مسجّلة بعد</div>}
+          </div>
+        </div>
+      </div>
+
+      {showAdd && <ManualPaymentModal students={students} onClose={() => setShowAdd(false)} onSubmit={(studentId, amount) => { recordPayment(studentId, amount); setShowAdd(false); }} />}
+    </div>
+  );
+}
+
+function ManualPaymentModal({ students, onClose, onSubmit }) {
+  const [studentId, setStudentId] = useState(students[0]?.id || '');
+  const [amount, setAmount] = useState('');
+  const student = students.find(s => s.id === studentId);
+
+  function submit(e) {
+    e.preventDefault();
+    if (!studentId) return;
+    onSubmit(studentId, amount || pkgOf(student?.package).price);
+  }
+
+  return (
+    <Modal title="تسجيل دفعة يدوياً" onClose={onClose} width={420}>
+      <form onSubmit={submit}>
+        <FormField label="الطالب">
+          <select value={studentId} onChange={e => setStudentId(e.target.value)} className="focus-ring" style={inputStyle}>
+            {students.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+          </select>
+        </FormField>
+        <FormField label="المبلغ (جنيه)" hint={student ? `سعر باقته الافتراضي: ${pkgOf(student.package).price} ج` : ''}>
+          <input type="number" value={amount} onChange={e => setAmount(e.target.value)} placeholder={student ? String(pkgOf(student.package).price) : ''} className="focus-ring" style={inputStyle} />
+        </FormField>
+        <div style={{ display: 'flex', gap: 10, marginTop: 4 }}>
+          <button type="button" onClick={onClose} className="focus-ring" style={{ flex: 1, padding: '11px', borderRadius: 9, border: '1px solid #e0d8c4', background: '#fff', cursor: 'pointer', fontWeight: 700 }}>إلغاء</button>
+          <button type="submit" className="focus-ring" style={{ flex: 2, padding: '11px', borderRadius: 9, border: 'none', background: COLORS.gold, color: COLORS.bg, cursor: 'pointer', fontWeight: 800 }}>تسجيل الدفعة</button>
+        </div>
+      </form>
+    </Modal>
+  );
+}
+
+/* ============================================================
+   TEACHER DASHBOARD
+   ============================================================ */
+function TeacherDashboard({ teacher, students, setStudents, sessions, setSessions, onLogout }) {
+  const [nav, setNav] = useState('students');
+  const [logging, setLogging] = useState(null); // student being logged for a session
+
+  const navItems = [
+    { key: 'students', label: 'طلابي', icon: Users },
+    { key: 'history', label: 'سجل الحصص', icon: CalendarDays },
+    { key: 'earnings', label: 'أرباحي', icon: Wallet },
+  ];
+
+  const myStudents = students.filter(s => s.teacherId === teacher.id && s.active !== false);
+  const mySessions = sessions.filter(se => se.teacherId === teacher.id);
+  const monthlyEarning = myStudents.reduce((sum, s) => sum + teacherSplit(teacher, s.package).teacherShare, 0);
+
+  function logSession(studentId, data) {
+    setSessions(prev => [...prev, { id: uid('sess'), studentId, teacherId: teacher.id, date: new Date().toISOString(), ...data }]);
+    if (data.newSurah || data.newPages != null) {
+      setStudents(prev => prev.map(s => s.id === studentId ? {
+        ...s,
+        currentSurah: data.newSurah || s.currentSurah,
+        memorizedPages: data.newPages != null ? data.newPages : s.memorizedPages,
+      } : s));
+    }
+    setLogging(null);
+  }
+
+  const titles = {
+    students: ['طلابي', `${myStudents.length} طالب مسجّل تحت إشرافك`],
+    history: ['سجل الحصص', 'كل الحصص اللي سجّلتها لطلابك'],
+    earnings: ['أرباحي', 'تفاصيل دخلك من كل طالب هذا الشهر'],
+  };
+
+  return (
+    <DashboardShell title={titles[nav][0]} subtitle={titles[nav][1]} roleLabel={`المعلم · ${teacher.name}`} navItems={navItems} activeNav={nav} setActiveNav={setNav} onLogout={onLogout}>
+      {nav === 'students' && (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(280px,1fr))', gap: 14 }}>
+          {myStudents.map(s => (
+            <div key={s.id} style={{ background: '#fff', border: '1px solid #e8e0cf', borderRadius: 14, padding: 18 }}>
+              <div style={{ display: 'flex', gap: 12, alignItems: 'center', marginBottom: 12 }}>
+                <SealMark size={48} pct={(s.memorizedPages / (s.totalPagesTarget || 20)) * 100} />
+                <div>
+                  <div style={{ fontWeight: 800, fontSize: 15 }}>{s.name}</div>
+                  <div style={{ fontSize: 12, color: '#9a9176' }}>{s.currentSurah}</div>
+                </div>
+              </div>
+              <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
+                <Pill tone="gold">{pkgOf(s.package).label}</Pill>
+                <Pill tone="neutral">{s.memorizedPages} صفحة محفوظة</Pill>
+              </div>
+              {s.zoomLink ? (
+                <a href={s.zoomLink} target="_blank" rel="noopener noreferrer" className="focus-ring" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, background: COLORS.goldDim, color: '#8a6a2e', padding: '9px', borderRadius: 9, fontSize: 13, fontWeight: 700, textDecoration: 'none', marginBottom: 8 }}>
+                  <LinkIcon size={14} /> فتح رابط الحصة
+                </a>
+              ) : (
+                <div style={{ textAlign: 'center', fontSize: 12, color: '#c08a8a', marginBottom: 8 }}>لا يوجد رابط حصة — تواصل مع الأدمن</div>
+              )}
+              <button onClick={() => setLogging(s)} className="focus-ring" style={{ width: '100%', background: COLORS.bg, color: COLORS.cream, border: 'none', padding: '9px', borderRadius: 9, fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>تسجيل حصة اليوم</button>
+            </div>
+          ))}
+          {myStudents.length === 0 && <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: 40, color: '#9a9176' }}>لا يوجد طلاب معيّنون لك حالياً</div>}
+        </div>
+      )}
+
+      {nav === 'history' && (
+        <div style={{ background: '#fff', borderRadius: 14, border: '1px solid #e8e0cf', overflow: 'hidden' }}>
+          <table>
+            <thead><tr style={{ background: '#fbf9f2', borderBottom: '1px solid #e8e0cf' }}>{['الطالب', 'التاريخ', 'الحضور', 'ملاحظات'].map((h, i) => <th key={i} style={{ padding: '12px 14px', textAlign: 'right', fontSize: 12, color: '#8a7f68', fontWeight: 700 }}>{h}</th>)}</tr></thead>
+            <tbody>
+              {[...mySessions].sort((a, b) => new Date(b.date) - new Date(a.date)).map(se => {
+                const student = students.find(s => s.id === se.studentId);
+                return (
+                  <tr key={se.id} style={{ borderBottom: '1px solid #f0ead9' }}>
+                    <td style={{ padding: '11px 14px', fontWeight: 700, fontSize: 13 }}>{student?.name}</td>
+                    <td style={{ padding: '11px 14px', fontSize: 12.5, color: '#8a7f68' }}>{formatDateTime(se.date)}</td>
+                    <td style={{ padding: '11px 14px' }}><Pill tone={se.attended ? 'good' : 'bad'}>{se.attended ? 'حضر' : 'غاب'}</Pill></td>
+                    <td style={{ padding: '11px 14px', fontSize: 12.5, color: '#8a7f68' }}>{se.notes || '—'}</td>
+                  </tr>
+                );
+              })}
+              {mySessions.length === 0 && <tr><td colSpan={4} style={{ padding: 26, textAlign: 'center', color: '#9a9176' }}>لم تُسجّل أي حصص بعد</td></tr>}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {nav === 'earnings' && (
+        <div>
+          <div style={{ background: COLORS.bg, borderRadius: 14, padding: 22, marginBottom: 18, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div><div style={{ color: '#a8a092', fontSize: 13 }}>إجمالي دخلك الشهري المتوقع</div><div style={{ color: COLORS.gold, fontSize: 28, fontWeight: 800 }}>{monthlyEarning.toLocaleString('ar-EG')} ج</div></div>
+            <Wallet size={36} color={COLORS.gold} />
+          </div>
+          <div style={{ background: '#fff', borderRadius: 14, border: '1px solid #e8e0cf', overflow: 'hidden' }}>
+            <table>
+              <thead><tr style={{ background: '#fbf9f2', borderBottom: '1px solid #e8e0cf' }}>{['الطالب', 'الباقة', 'نسبتك', 'دخلك منه'].map((h, i) => <th key={i} style={{ padding: '12px 14px', textAlign: 'right', fontSize: 12, color: '#8a7f68', fontWeight: 700 }}>{h}</th>)}</tr></thead>
+              <tbody>
+                {myStudents.map(s => {
+                  const split = teacherSplit(teacher, s.package);
+                  return (
+                    <tr key={s.id} style={{ borderBottom: '1px solid #f0ead9' }}>
+                      <td style={{ padding: '11px 14px', fontWeight: 700, fontSize: 13 }}>{s.name}</td>
+                      <td style={{ padding: '11px 14px', fontSize: 12.5 }}>{pkgOf(s.package).label}</td>
+                      <td style={{ padding: '11px 14px', fontSize: 12.5 }}>{teacher.sharePercent}%</td>
+                      <td style={{ padding: '11px 14px', fontWeight: 800, fontSize: 13, color: '#2d5a3a' }}>{split.teacherShare} ج</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {logging && <LogSessionModal student={logging} onClose={() => setLogging(null)} onSubmit={data => logSession(logging.id, data)} />}
+    </DashboardShell>
+  );
+}
+
+function LogSessionModal({ student, onClose, onSubmit }) {
+  const [attended, setAttended] = useState(true);
+  const [notes, setNotes] = useState('');
+  const [newSurah, setNewSurah] = useState(student.currentSurah || '');
+  const [newPages, setNewPages] = useState(student.memorizedPages || 0);
+
+  function submit(e) { e.preventDefault(); onSubmit({ attended, notes, newSurah, newPages: Number(newPages) }); }
+
+  return (
+    <Modal title={`تسجيل حصة: ${student.name}`} onClose={onClose} width={460}>
+      <form onSubmit={submit}>
+        <FormField label="هل حضر الطالب؟">
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button type="button" onClick={() => setAttended(true)} className="focus-ring" style={{ flex: 1, padding: '10px', borderRadius: 9, border: 'none', cursor: 'pointer', background: attended ? '#e3eee3' : '#f3eee0', color: attended ? '#2d5a3a' : '#5a5340', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}><CheckCircle2 size={15} /> حضر</button>
+            <button type="button" onClick={() => setAttended(false)} className="focus-ring" style={{ flex: 1, padding: '10px', borderRadius: 9, border: 'none', cursor: 'pointer', background: !attended ? COLORS.redBg : '#f3eee0', color: !attended ? COLORS.red : '#5a5340', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}><XCircle size={15} /> غاب</button>
+          </div>
+        </FormField>
+        <FormField label="السورة الحالية"><input value={newSurah} onChange={e => setNewSurah(e.target.value)} className="focus-ring" style={inputStyle} /></FormField>
+        <FormField label="إجمالي الصفحات المحفوظة الآن"><input type="number" value={newPages} onChange={e => setNewPages(e.target.value)} className="focus-ring" style={inputStyle} /></FormField>
+        <FormField label="ملاحظات لولي الأمر (اختياري)"><textarea value={notes} onChange={e => setNotes(e.target.value)} rows={3} placeholder="مثال: تلاوة ممتازة اليوم، يحتاج مراجعة آية 12-15" className="focus-ring" style={{ ...inputStyle, resize: 'vertical' }} /></FormField>
+        <div style={{ display: 'flex', gap: 10, marginTop: 4 }}>
+          <button type="button" onClick={onClose} className="focus-ring" style={{ flex: 1, padding: '11px', borderRadius: 9, border: '1px solid #e0d8c4', background: '#fff', cursor: 'pointer', fontWeight: 700 }}>إلغاء</button>
+          <button type="submit" className="focus-ring" style={{ flex: 2, padding: '11px', borderRadius: 9, border: 'none', background: COLORS.gold, color: COLORS.bg, cursor: 'pointer', fontWeight: 800 }}>حفظ الحصة</button>
+        </div>
+      </form>
+    </Modal>
+  );
+}
+
+/* ============================================================
+   PARENT DASHBOARD
+   ============================================================ */
+function ParentDashboard({ parent, students, teachers, payments, sessions, onLogout }) {
+  const [nav, setNav] = useState('overview');
+  const myKids = students.filter(s => parent.studentIds.includes(s.id));
+  const [selectedKid, setSelectedKid] = useState(myKids[0]?.id || null);
+  const kid = myKids.find(s => s.id === selectedKid) || myKids[0];
+
+  const navItems = [
+    { key: 'overview', label: 'متابعة الحفظ', icon: BookOpen },
+    { key: 'sessions', label: 'سجل الحصص', icon: CalendarDays },
+    { key: 'billing', label: 'الاشتراك والدفع', icon: Wallet },
+  ];
+
+  if (!kid) {
+    return (
+      <DashboardShell title="متابعة الحفظ" roleLabel={`ولي الأمر · ${parent.name}`} navItems={navItems} activeNav={nav} setActiveNav={setNav} onLogout={onLogout}>
+        <div style={{ textAlign: 'center', padding: 60, color: '#9a9176' }}>لا يوجد أبناء مسجّلون مرتبطون بحسابك حالياً. تواصل مع الأدمن.</div>
+      </DashboardShell>
+    );
+  }
+
+  const teacher = teachers.find(t => t.id === kid.teacherId);
+  const status = paymentStatus(kid);
+  const kidSessions = sessions.filter(se => se.studentId === kid.id);
+  const kidPayments = payments.filter(p => p.studentId === kid.id);
+
+  const titles = {
+    overview: ['متابعة الحفظ', `تقدّم ${kid.name} في حفظ القرآن الكريم`],
+    sessions: ['سجل الحصص', `كل الحصص المسجّلة لـ${kid.name}`],
+    billing: ['الاشتراك والدفع', 'تفاصيل الباقة وموعد الدفع القادم'],
+  };
+
+  return (
+    <DashboardShell title={titles[nav][0]} subtitle={titles[nav][1]} roleLabel={`ولي الأمر · ${parent.name}`} navItems={navItems} activeNav={nav} setActiveNav={setNav} onLogout={onLogout}>
+      {myKids.length > 1 && (
+        <div style={{ display: 'flex', gap: 8, marginBottom: 20 }}>
+          {myKids.map(k => (
+            <button key={k.id} onClick={() => setSelectedKid(k.id)} className="focus-ring" style={{ padding: '8px 16px', borderRadius: 999, border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 700, background: selectedKid === k.id ? COLORS.bg : '#f3eee0', color: selectedKid === k.id ? '#fff' : '#5a5340' }}>{k.name}</button>
+          ))}
+        </div>
+      )}
+
+      {nav === 'overview' && (
+        <div>
+          <div style={{ display: 'flex', gap: 20, alignItems: 'center', background: '#fff', border: '1px solid #e8e0cf', borderRadius: 16, padding: 26, marginBottom: 20, flexWrap: 'wrap' }}>
+            <SealMark size={90} pct={(kid.memorizedPages / (kid.totalPagesTarget || 20)) * 100} />
+            <div style={{ flex: 1, minWidth: 200 }}>
+              <div style={{ fontSize: 19, fontWeight: 800, color: COLORS.ink, marginBottom: 6 }}>{kid.name}</div>
+              <div style={{ fontSize: 14, color: '#8a7f68', marginBottom: 10 }}>السورة الحالية: <strong style={{ color: COLORS.ink }}>{kid.currentSurah}</strong></div>
+              <div style={{ fontSize: 13, color: '#8a7f68' }}>{kid.memorizedPages} من {kid.totalPagesTarget} صفحة محفوظة</div>
+              {teacher && <div style={{ marginTop: 12, display: 'flex', alignItems: 'center', gap: 8, fontSize: 13 }}><GraduationCap size={15} color={COLORS.gold} /> المعلم: <strong>{teacher.name}</strong></div>}
+            </div>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(180px,1fr))', gap: 14 }}>
+            <StatCard icon={CalendarDays} label="حصص هذا الشهر" value={kidSessions.length} />
+            <StatCard icon={CheckCircle2} label="نسبة الحضور" value={kidSessions.length ? `${Math.round((kidSessions.filter(s => s.attended).length / kidSessions.length) * 100)}%` : '—'} accent={COLORS.green} />
+            <StatCard icon={Wallet} label="حالة الدفع" value={status === 'paid' ? 'مدفوع' : status === 'grace' ? 'قارب' : 'متأخر'} accent={status === 'paid' ? '#7a8f5a' : COLORS.red} />
+          </div>
+
+          {kidSessions.length > 0 && kidSessions[kidSessions.length - 1].notes && (
+            <div style={{ marginTop: 20, background: COLORS.goldDim, border: '1px solid rgba(212,175,106,0.3)', borderRadius: 12, padding: 16 }}>
+              <div style={{ fontSize: 12.5, fontWeight: 700, color: '#8a6a2e', marginBottom: 6 }}>آخر ملاحظة من المعلم</div>
+              <div style={{ fontSize: 14, color: '#5a4a20', lineHeight: 1.7 }}>{kidSessions[kidSessions.length - 1].notes}</div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {nav === 'sessions' && (
+        <div style={{ background: '#fff', borderRadius: 14, border: '1px solid #e8e0cf', overflow: 'hidden' }}>
+          <table>
+            <thead><tr style={{ background: '#fbf9f2', borderBottom: '1px solid #e8e0cf' }}>{['التاريخ', 'الحضور', 'ملاحظات المعلم'].map((h, i) => <th key={i} style={{ padding: '12px 14px', textAlign: 'right', fontSize: 12, color: '#8a7f68', fontWeight: 700 }}>{h}</th>)}</tr></thead>
+            <tbody>
+              {[...kidSessions].sort((a, b) => new Date(b.date) - new Date(a.date)).map(se => (
+                <tr key={se.id} style={{ borderBottom: '1px solid #f0ead9' }}>
+                  <td style={{ padding: '11px 14px', fontSize: 13 }}>{formatDateTime(se.date)}</td>
+                  <td style={{ padding: '11px 14px' }}><Pill tone={se.attended ? 'good' : 'bad'}>{se.attended ? 'حضر' : 'غاب'}</Pill></td>
+                  <td style={{ padding: '11px 14px', fontSize: 13, color: '#8a7f68' }}>{se.notes || '—'}</td>
+                </tr>
+              ))}
+              {kidSessions.length === 0 && <tr><td colSpan={3} style={{ padding: 26, textAlign: 'center', color: '#9a9176' }}>لا توجد حصص مسجّلة بعد</td></tr>}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {nav === 'billing' && (
+        <div>
+          <div style={{ background: '#fff', border: '1px solid #e8e0cf', borderRadius: 14, padding: 22, marginBottom: 18 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
+              <div><div style={{ fontSize: 13, color: '#8a7f68' }}>الباقة الحالية</div><div style={{ fontSize: 18, fontWeight: 800 }}>{pkgOf(kid.package).label}</div></div>
+              <Pill tone={status === 'paid' ? 'good' : status === 'grace' ? 'warn' : 'bad'}>{status === 'paid' ? 'مدفوع' : status === 'grace' ? 'قارب الاستحقاق' : 'متأخر — برجاء السداد'}</Pill>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 12 }}>
+              <div><div style={{ fontSize: 11.5, color: '#9a9176' }}>الحصص شهرياً</div><div style={{ fontWeight: 700, fontSize: 15 }}>{pkgOf(kid.package).sessions}</div></div>
+              <div><div style={{ fontSize: 11.5, color: '#9a9176' }}>السعر الشهري</div><div style={{ fontWeight: 700, fontSize: 15 }}>{pkgOf(kid.package).price} ج</div></div>
+              <div><div style={{ fontSize: 11.5, color: '#9a9176' }}>آخر دفعة</div><div style={{ fontWeight: 700, fontSize: 15 }}>{formatDate(kid.lastPaymentDate)}</div></div>
+            </div>
+            <div style={{ marginTop: 16, padding: '12px 14px', background: '#fbf9f2', borderRadius: 9, fontSize: 13, color: '#5a5340' }}>
+              للدفع، حوّل قيمة الاشتراك عبر فودافون كاش على الرقم المعتمد للأكاديمية، ثم تواصل مع الأدمن لتأكيد الدفعة.
+            </div>
+          </div>
+          <div style={{ fontWeight: 800, fontSize: 14.5, marginBottom: 10 }}>سجل المدفوعات</div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {[...kidPayments].sort((a, b) => new Date(b.date) - new Date(a.date)).map(p => (
+              <div key={p.id} style={{ background: '#fff', border: '1px solid #e8e0cf', borderRadius: 10, padding: '11px 14px', display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ fontSize: 13, color: '#8a7f68' }}>{formatDate(p.date)} · {p.method}</span>
+                <span style={{ fontWeight: 800, fontSize: 14, color: '#2d5a3a' }}>{p.amount} ج</span>
+              </div>
+            ))}
+            {kidPayments.length === 0 && <div style={{ fontSize: 13, color: '#9a9176', textAlign: 'center', padding: 16 }}>لا توجد مدفوعات مسجّلة بعد</div>}
+          </div>
+        </div>
+      )}
+    </DashboardShell>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(React.createElement(App));
+</script>
+</body>
+</html>
